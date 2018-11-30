@@ -1,5 +1,4 @@
 import os
-import random
 
 import pygame
 
@@ -7,7 +6,7 @@ from Blocks import Block, Platform
 from Characters import GravityChar, CustomGroup
 from Level import Level, Objective
 from Text import Text
-from Weapons import Bullet, Cannon
+from Weapons import Cannon
 
 # centrar ventana
 os.environ['SDL_VIDEO_CENTERED'] = '1'
@@ -25,12 +24,12 @@ def main():
     # personajes
     char_size = 40
 
-    player1 = GravityChar(char_size, char_size, 600, 200, img='img/Pina.png', jumpspeed=18)
+    player1 = GravityChar(char_size, char_size, 600, 200, img='img/Anouk.png', jumpspeed=18)
     player2 = GravityChar(char_size, char_size, 100, 200, img='img/LittleFrank.png', jumpspeed=18)
-    player3 = GravityChar(char_size, char_size, 300, 200, img='img/Pina.png', jumpspeed=18)
+    player3 = GravityChar(char_size, char_size, 300, 200, img='img/Ardila.png', jumpspeed=18)
     player4 = GravityChar(char_size, char_size, 300, 200, img='img/Pina.png', jumpspeed=18)
 
-    chars = CustomGroup([player1, player2])
+    chars = CustomGroup([player1, player2, player3])
     chars_static = [player1, player2, player3, player4]  # lista para asociar con joysticks
 
     # proyectile
@@ -111,8 +110,10 @@ def main():
 
     # controles
     joysticks = [pygame.joystick.Joystick(x) for x in range(pygame.joystick.get_count())]
+    a_pressed = []
     for joystick in joysticks:
         joystick.init()
+        a_pressed.append(0)
 
     joy_threshold = 0.4
 
@@ -142,8 +143,13 @@ def main():
                     chars_static[i].move(5, 0)
                 if joysticks[i].get_axis(0) < -joy_threshold:
                     chars_static[i].move(-5, 0)
+
                 if joysticks[i].get_button(0):
-                    chars_static[i].jump()
+                    if not a_pressed[i]:
+                        chars_static[i].jump()
+                    a_pressed[i] = 1
+                else:
+                    a_pressed[i] = 0
 
         # teclas apretadas
         pressed = pygame.key.get_pressed()
