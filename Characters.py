@@ -153,7 +153,7 @@ class GravityChar(Char):
         self.vy = 0
 
         self.jumptries = 0
-        self.maxjumptries = 4
+        self.maxjumptries = 5
         self.standing = False
 
     def update(self):

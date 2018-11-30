@@ -4,10 +4,10 @@ import random
 import pygame
 
 from Blocks import Block, Platform
-from Characters import GravityChar, CustomGroup, Kirby
+from Characters import GravityChar, CustomGroup
 from Level import Level, Objective
-from Text import gen_text, Text
-from Weapons import Bullet
+from Text import Text
+from Weapons import Bullet, Cannon
 
 # centrar ventana
 os.environ['SDL_VIDEO_CENTERED'] = '1'
@@ -20,16 +20,18 @@ def main():
 
     screen_width, screen_height = 800, 600
     screen = pygame.display.set_mode((screen_width, screen_height))
-    pygame.display.set_caption("tutorial pygame")
+    pygame.display.set_caption("tutorial FrenCoins")
 
     # personajes
     char_size = 40
 
-    player2 = GravityChar(char_size, char_size, 600, 200, img='img/Pina.png', jumpspeed=18)
-    player1 = Kirby(char_size, char_size, 100, 200, img='img/diggo.png', jumpspeed=8)
-    player3 = GravityChar(char_size, char_size, 300, 200, img='img/LittleFrank.png', jumpspeed=18)
+    player1 = GravityChar(char_size, char_size, 600, 200, img='img/Pina.png', jumpspeed=18)
+    player2 = GravityChar(char_size, char_size, 100, 200, img='img/LittleFrank.png', jumpspeed=18)
+    player3 = GravityChar(char_size, char_size, 300, 200, img='img/Pina.png', jumpspeed=18)
+    player4 = GravityChar(char_size, char_size, 300, 200, img='img/Pina.png', jumpspeed=18)
 
     chars = CustomGroup([player1, player2])
+    chars_static = [player1, player2, player3, player4]  # lista para asociar con joysticks
 
     # proyectile
     bullets = CustomGroup()
@@ -67,6 +69,25 @@ def main():
                      width_part * 3 + border_width - platform_width / 2, height_part + border_width,
                      color=platform_color)
 
+    # cañones
+    cannons = CustomGroup()
+
+    cannon1 = Cannon(border_width,
+                     screen_height - border_width - 50,
+                     bullet_group=bullets, bullet_vx=6)
+
+    cannon2 = Cannon(screen_width - border_width - 50, height_part * 2 + border_width - 50,
+                     bullet_group=bullets, bullet_vx=-6)
+
+    cannon3 = Cannon(border_width, border_width,
+                     bullet_group=bullets, bullet_vx=6, bullet_vy=4)
+
+    cannon4 = Cannon(screen_width - border_width - 50,
+                     screen_height - border_width - 50,
+                     bullet_group=bullets, bullet_vx=-6, bullet_vy=-2)
+
+    cannons_static = [cannon1, cannon2, cannon3, cannon4]
+
     # objetivos
     objective1 = Objective((50, 100))
     objective2 = Objective((700, 100))
@@ -74,23 +95,26 @@ def main():
 
     # niveles
     levels = [Level(30, [objective1, objective2, objective3], fps=fps),
-              Level(15, [objective1], fps=fps),
+              Level(30, [objective1], fps=fps),
               Level(15, [Objective((350, 300))], fps=fps),
-              Level(15, [Objective((150, 100)), Objective((600, 100))], fps=fps), ]
+              Level(30, [Objective((150, 100)), Objective((600, 100))], fps=fps), ]
 
     level_platforms = [CustomGroup(plat1, plat2, plat3, plat4, plat5),
                        CustomGroup(plat2, plat3),
-                       CustomGroup(plat4, plat5),
+                       CustomGroup(),
                        CustomGroup(plat1), ]
 
     level_num = 0
     level = levels[level_num]
     platforms = level_platforms[level_num]
+    cannons.add(cannons_static[level_num])
 
     # controles
     joysticks = [pygame.joystick.Joystick(x) for x in range(pygame.joystick.get_count())]
     for joystick in joysticks:
         joystick.init()
+
+    joy_threshold = 0.4
 
     running = True
     while running:
@@ -111,8 +135,15 @@ def main():
                 if event.key == pygame.K_r:
                     player3.jump()
 
-        for joystick in joysticks:
-            print(joystick.get_axis(0), joystick.get_axis(1))
+        # joysticks
+        for i in range(len(joysticks)):
+            if i < len(chars_static):
+                if joysticks[i].get_axis(0) > joy_threshold:
+                    chars_static[i].move(5, 0)
+                if joysticks[i].get_axis(0) < -joy_threshold:
+                    chars_static[i].move(-5, 0)
+                if joysticks[i].get_button(0):
+                    chars_static[i].jump()
 
         # teclas apretadas
         pressed = pygame.key.get_pressed()
@@ -131,24 +162,16 @@ def main():
         if pressed[pygame.K_l]:
             player3.move(dx=5)
 
-        if pressed[pygame.K_SPACE]:
-            b = Bullet(5,
-                       random.randint(int(screen_width / 3), int(screen_width / 3 * 2)),
-                       random.randint(int(screen_height / 3), int(screen_height / 3 * 2)),
-                       random.randint(-1, 1) * 6, random.randint(-1, 1) * 6,
-                       color=(50, 50, 50))
-            if b.vx == 0 and b.vy == 0:
-                b.vx = -1 ^ random.randint(1, 2) * 6
-            bullets.add(b)
-
         # mov automático
         chars.update()
+        cannons.update()
         bullets.update()
         level.update()
 
         # colisiones
         chars.detect_collisions(blocks)
         chars.detect_collisions(platforms)
+        chars.detect_collisions(cannons)
         for _ in chars:
             chars.detect_collisions(chars)
 
@@ -166,6 +189,7 @@ def main():
             else:
                 level = levels[level_num]
                 platforms = level_platforms[level_num]
+                cannons.add(cannons_static[level_num])
 
         if len(chars) == 0:
             running = False
@@ -174,6 +198,7 @@ def main():
         screen.fill((25, 115, 200))
         blocks.draw(screen)
         platforms.draw(screen)
+        cannons.draw(screen)
         level.draw(screen)
         chars.draw(screen)
         bullets.draw(screen)

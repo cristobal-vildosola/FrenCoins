@@ -17,7 +17,7 @@ def main():
 
     screen_width, screen_height = 800, 600
     screen = pygame.display.set_mode((screen_width, screen_height))
-    pygame.display.set_caption("tutorial pygame")
+    pygame.display.set_caption("tutorial FrenCoins")
 
     # personajes
     char_size = 50
@@ -67,7 +67,7 @@ def main():
 
     platforms = CustomGroup(plat1, plat2, plat3, plat4, plat5)
 
-    indicacion = Text("Jugador 1 usa flechas para moverse, jugador 2 usa zsc... wat?",
+    indicacion = Text("Jugador 1 usa flechas para moverse, jugador 2 usa zsc",
                       screen_width / 2, 17, center=True, color=(200, 200, 200))
     indicacion2 = Text("(de esta manera no se bloquea el input en mi teclado)",
                        screen_width / 2, 37, center=True, color=(200, 200, 200), height=20)

@@ -1,5 +1,5 @@
 import pygame
-from Text import gen_text
+from Text import Text
 
 
 class Level:
@@ -17,7 +17,8 @@ class Level:
         self.time -= 1.0 / self.fps
 
     def draw(self, screen):
-        screen.blit(gen_text(str(int(self.time)), self.color), self.pos)
+        time = Text(str(int(self.time)), self.pos.top, self.pos.left, self.color)
+        time.draw(screen)
 
         for objective in self.objectives:
             objective.draw(screen)
