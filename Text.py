@@ -1,11 +1,25 @@
 import pygame
 
-font = {}
+# los fonts se tienen que inicializar, para no hacerlo cada vez que
+# creo un nuevo texto los guardo en un diccionario según tamaño
+fonts = {}
 
 
-def gen_text(text, color=(0, 0, 0), antialias=True, height=30):
-    global font
-    if height not in font:
-        font[height] = pygame.font.Font(None, height)
+class Text:
 
-    return font[height].render(text, antialias, color)
+    def __init__(self, text, x, y, color=(0, 0, 0), height=30, center=False, antialias=True):
+        global fonts
+        if height not in fonts:
+            fonts[height] = pygame.font.Font(None, height)
+
+        self.text = fonts[height].render(text, antialias, color)
+
+        if center:
+            self.pos = self.text.get_rect()
+            self.pos.center = (x, y)
+        else:
+            self.pos = self.text.get_rect().move(x, y)
+
+    def draw(self, screen):
+        screen.blit(self.text, self.pos)
+        return

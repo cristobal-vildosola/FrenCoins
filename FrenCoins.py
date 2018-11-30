@@ -1,11 +1,16 @@
-import pygame
+import os
 import random
+
+import pygame
 
 from Blocks import Block, Platform
 from Characters import GravityChar, CustomGroup, Kirby
-from Weapons import Bullet
 from Level import Level, Objective
-from Text import gen_text
+from Text import gen_text, Text
+from Weapons import Bullet
+
+# centrar ventana
+os.environ['SDL_VIDEO_CENTERED'] = '1'
 
 
 def main():
@@ -14,17 +19,17 @@ def main():
     fps = 60
 
     screen_width, screen_height = 800, 600
-    screen = pygame.display.set_mode((screen_width, screen_height), pygame.HWSURFACE | pygame.DOUBLEBUF)
+    screen = pygame.display.set_mode((screen_width, screen_height))
     pygame.display.set_caption("tutorial pygame")
 
     # personajes
     char_size = 40
 
-    player1 = GravityChar(char_size, char_size, 600, 200, img='img/Pina.png', jumpspeed=18)
-    player2 = Kirby(char_size, char_size, 100, 200, img='img/diggo.png', jumpspeed=8)
+    player2 = GravityChar(char_size, char_size, 600, 200, img='img/Pina.png', jumpspeed=18)
+    player1 = Kirby(char_size, char_size, 100, 200, img='img/diggo.png', jumpspeed=8)
     player3 = GravityChar(char_size, char_size, 300, 200, img='img/LittleFrank.png', jumpspeed=18)
 
-    chars = CustomGroup([player1, player2, player3])
+    chars = CustomGroup([player1, player2])
 
     # proyectile
     bullets = CustomGroup()
@@ -178,10 +183,10 @@ def main():
         clock.tick(fps)
 
     # pantalla final
-    titulo = gen_text("Game Over", height=100, color=(20, 0, 0))
-    subtitulo = gen_text("Presiona espacio para empezar de nuevo", height=30, color=(255, 255, 255))
-    pos = titulo.get_rect()
-    pos.center = (screen_width / 2, screen_height / 2)
+    titulo = Text("Game Over", screen_width / 2, screen_height / 2,
+                  height=100, color=(20, 0, 0), center=True)
+    subtitulo = Text("Presiona espacio para empezar de nuevo", screen_width / 2, screen_height / 2 + 100,
+                     height=30, color=(255, 255, 255), center=True)
 
     running = True
     while running:
@@ -202,8 +207,8 @@ def main():
         screen.fill((25, 115, 200))
         blocks.draw(screen)
         chars.draw(screen)
-        screen.blit(titulo, pos)
-        screen.blit(subtitulo, pos.move(0, 100))
+        titulo.draw(screen)
+        subtitulo.draw(screen)
 
         # actualizar y esperar un tick
         pygame.display.flip()
