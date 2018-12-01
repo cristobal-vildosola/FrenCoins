@@ -75,10 +75,12 @@ def main():
                      screen_height - border_width - 50,
                      bullet_group=bullets, bullet_vx=6)
 
-    cannon2 = Cannon(screen_width - border_width - 50, height_part * 2 + border_width - 50,
+    cannon2 = Cannon(screen_width - border_width - 50,
+                     height_part * 2 + border_width - 50,
                      bullet_group=bullets, bullet_vx=-6)
 
-    cannon3 = Cannon(border_width, border_width,
+    cannon3 = Cannon(border_width,
+                     border_width,
                      bullet_group=bullets, bullet_vx=6, bullet_vy=4)
 
     cannon4 = Cannon(screen_width - border_width - 50,
