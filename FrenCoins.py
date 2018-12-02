@@ -24,12 +24,12 @@ def main():
     # personajes
     char_size = 40
 
-    player1 = GravityChar(char_size, char_size, 600, 200, img='img/Anouk.png', jumpspeed=18)
-    player2 = GravityChar(char_size, char_size, 100, 200, img='img/LittleFrank.png', jumpspeed=18)
-    player3 = GravityChar(char_size, char_size, 300, 200, img='img/Ardila.png', jumpspeed=18)
-    player4 = GravityChar(char_size, char_size, 300, 200, img='img/Pina.png', jumpspeed=18)
+    player1 = GravityChar(char_size, char_size, 600, 200, img='img/Tomimi.png', jumpspeed=18)
+    player2 = GravityChar(char_size, char_size, 100, 350, img='img/LittleFrank.png', jumpspeed=18)
+    player3 = GravityChar(char_size, char_size, 300, 200, img='img/Peiblv3.png', jumpspeed=18)
+    player4 = GravityChar(char_size, char_size, 500, 100, img='img/Tito.png', jumpspeed=18)
 
-    chars = CustomGroup([player1, player2, player3])
+    chars = CustomGroup([player1, player2, player3, player4])
     chars_static = [player1, player2, player3, player4]  # lista para asociar con joysticks
 
     # proyectile
