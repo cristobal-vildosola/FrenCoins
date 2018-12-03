@@ -20,6 +20,8 @@ def main():
     screen_width, screen_height = 800, 600
     screen = pygame.display.set_mode((screen_width, screen_height))
     pygame.display.set_caption("tutorial FrenCoins")
+    # TODO: reescalar imagen para evitar problemas con trasparencia
+    pygame.display.set_icon(pygame.transform.smoothscale(pygame.image.load('img/FrenCoin.png'), (32, 32)))
 
     # personajes
     char_size = 40
@@ -116,6 +118,7 @@ def main():
     for joystick in joysticks:
         joystick.init()
         a_pressed.append(0)
+        print(joystick.get_name())
 
     joy_threshold = 0.4
 
