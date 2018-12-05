@@ -20,8 +20,7 @@ def main():
     screen_width, screen_height = 800, 600
     screen = pygame.display.set_mode((screen_width, screen_height))
     pygame.display.set_caption("tutorial FrenCoins")
-    # TODO: reescalar imagen para evitar problemas con trasparencia
-    pygame.display.set_icon(pygame.transform.smoothscale(pygame.image.load('static/img/FrenCoin.png'), (32, 32)))
+    pygame.display.set_icon(pygame.image.load('static/img/favicon.png'))
 
     # personajes
     char_size = 40
