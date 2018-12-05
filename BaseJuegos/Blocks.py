@@ -55,14 +55,14 @@ class Platform(Block):
     def __init__(self, width, height, x, y, color=(255, 0, 0)):
         Block.__init__(self, width, height, x, y, color)
 
-    # choque con el lado izquierdo
+    # choque con el lado izquierdo, no hace nada
     def collide_left(self, moving_sprite):
         return False
 
-    # choque con el lado derecho
+    # choque con el lado derecho, no hace nada
     def collide_right(self, moving_sprite):
         return False
 
-    # choque con el lado inferior
+    # choque con el lado inferior, no hace nada
     def collide_bottom(self, moving_sprite):
         return False

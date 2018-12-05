@@ -1,11 +1,15 @@
-import pygame
-import random
+import os
 
-from Blocks import Block, Platform
-from Characters import GravityChar, CustomGroup, Kirby
-from Weapons import Bullet
-from Level import Level, Objective
-from Text import gen_text
+import pygame
+
+from modulos.Blocks import Block, Platform
+from modulos.Characters import GravityChar, CustomGroup
+from modulos.Level import Level, Objective
+from modulos.Text import Text
+from modulos.Weapons import Cannon
+
+# centrar ventana
+os.environ['SDL_VIDEO_CENTERED'] = '1'
 
 
 def main():
@@ -14,20 +18,21 @@ def main():
     fps = 60
 
     screen_width, screen_height = 800, 600
-    screen = pygame.display.set_mode((screen_width, screen_height), pygame.HWSURFACE | pygame.DOUBLEBUF)
-    pygame.display.set_caption("tutorial pygame")
+    screen = pygame.display.set_mode((screen_width, screen_height))
+    pygame.display.set_caption("tutorial FrenCoins")
+    # TODO: reescalar imagen para evitar problemas con trasparencia
+    pygame.display.set_icon(pygame.transform.smoothscale(pygame.image.load('static/img/FrenCoin.png'), (32, 32)))
 
     # personajes
     char_size = 40
 
-    player1 = GravityChar(char_size, char_size, 600, 200, img='img/Pina.png', jumpspeed=18)
-    player2 = Kirby(char_size, char_size, 100, 200, img='img/diggo.png', jumpspeed=8)
-    player3 = GravityChar(char_size, char_size, 300, 200, img='img/LittleFrank.png', jumpspeed=18)
+    player1 = GravityChar(char_size, char_size, 600, 200, img='static/img/Tomimi.png', jumpspeed=18)
+    player2 = GravityChar(char_size, char_size, 100, 350, img='static/img/LittleFrank.png', jumpspeed=18)
+    player3 = GravityChar(char_size, char_size, 300, 200, img='static/img/Peiblv3.png', jumpspeed=18)
+    player4 = GravityChar(char_size, char_size, 500, 100, img='static/img/Tito.png', jumpspeed=18)
 
     chars = CustomGroup([player1, player2, player3])
-
-    # proyectile
-    bullets = CustomGroup()
+    chars_static = [player1, player2, player3, player4]  # lista para asociar con joysticks
 
     # bloques
     blocks = CustomGroup()
@@ -62,30 +67,53 @@ def main():
                      width_part * 3 + border_width - platform_width / 2, height_part + border_width,
                      color=platform_color)
 
-    # objetivos
-    objective1 = Objective((50, 100))
-    objective2 = Objective((700, 100))
-    objective3 = Objective((200, 500))
+    # cañones
+    cannon1 = Cannon(border_width, screen_height - border_width - 50, bullet_vx=6)
+
+    cannon2 = Cannon(border_width, screen_height - border_width - 50, bullet_vx=6)
+    cannon3 = Cannon(screen_width - border_width - 50,
+                     height_part * 2 + border_width - 50, bullet_vx=-6)
+
+    cannon4 = Cannon(screen_width - border_width - 50,
+                     height_part * 2 + border_width - 50, bullet_vx=-6)
+    cannon5 = Cannon(border_width, border_width,
+                     bullet_vx=6, bullet_vy=4)
+
+    cannon6 = Cannon(screen_width - border_width - 50,
+                     height_part * 2 + border_width - 50, bullet_vx=-6)
+    cannon7 = Cannon(border_width, border_width,
+                     bullet_vx=6, bullet_vy=4)
+    cannon8 = Cannon(screen_width - border_width - 50,
+                     screen_height - border_width - 50,
+                     bullet_vx=-6, bullet_vy=-2)
 
     # niveles
-    levels = [Level(30, [objective1, objective2, objective3], fps=fps),
-              Level(15, [objective1], fps=fps),
-              Level(15, [Objective((350, 300))], fps=fps),
-              Level(15, [Objective((150, 100)), Objective((600, 100))], fps=fps), ]
+    levels = [Level(30, [Objective((50, 100)), Objective((700, 100)), Objective((200, 500))],
+                    blocks=blocks, platforms=CustomGroup(plat1, plat2, plat3, plat4, plat5),
+                    cannons=CustomGroup(cannon1), fps=fps),
 
-    level_platforms = [CustomGroup(plat1, plat2, plat3, plat4, plat5),
-                       CustomGroup(plat2, plat3),
-                       CustomGroup(plat4, plat5),
-                       CustomGroup(plat1), ]
+              Level(30, [Objective((50, 100))], blocks=blocks, cannons=CustomGroup(cannon2, cannon3),
+                    platforms=CustomGroup(plat2, plat3), fps=fps),
+
+              Level(15, [Objective((350, 300))], blocks=blocks, cannons=CustomGroup(cannon4, cannon5),
+                    platforms=CustomGroup(), fps=fps),
+
+              Level(30, [Objective((150, 100)), Objective((600, 100))], blocks=blocks,
+                    cannons=CustomGroup(cannon6, cannon7, cannon8),
+                    platforms=CustomGroup(plat1), fps=fps), ]
 
     level_num = 0
     level = levels[level_num]
-    platforms = level_platforms[level_num]
 
     # controles
     joysticks = [pygame.joystick.Joystick(x) for x in range(pygame.joystick.get_count())]
+    a_pressed = []
     for joystick in joysticks:
         joystick.init()
+        a_pressed.append(0)
+        print(joystick.get_name())
+
+    joystick_threshold = 0.4
 
     running = True
     while running:
@@ -103,11 +131,20 @@ def main():
                 if event.key == pygame.K_i:
                     player3.jump()
 
-                if event.key == pygame.K_r:
-                    player3.jump()
+        # joysticks
+        for i in range(len(joysticks)):
+            if i < len(chars_static):
+                if joysticks[i].get_axis(0) > joystick_threshold:
+                    chars_static[i].move(5, 0)
+                if joysticks[i].get_axis(0) < -joystick_threshold:
+                    chars_static[i].move(-5, 0)
 
-        for joystick in joysticks:
-            print(joystick.get_axis(0), joystick.get_axis(1))
+                if joysticks[i].get_button(0):
+                    if not a_pressed[i]:
+                        chars_static[i].jump()
+                    a_pressed[i] = 1
+                else:
+                    a_pressed[i] = 0
 
         # teclas apretadas
         pressed = pygame.key.get_pressed()
@@ -126,33 +163,16 @@ def main():
         if pressed[pygame.K_l]:
             player3.move(dx=5)
 
-        if pressed[pygame.K_SPACE]:
-            b = Bullet(5,
-                       random.randint(int(screen_width / 3), int(screen_width / 3 * 2)),
-                       random.randint(int(screen_height / 3), int(screen_height / 3 * 2)),
-                       random.randint(-1, 1) * 6, random.randint(-1, 1) * 6,
-                       color=(50, 50, 50))
-            if b.vx == 0 and b.vy == 0:
-                b.vx = -1 ^ random.randint(1, 2) * 6
-            bullets.add(b)
-
         # mov automático
         chars.update()
-        bullets.update()
         level.update()
 
         # colisiones
-        chars.detect_collisions(blocks)
-        chars.detect_collisions(platforms)
-        for _ in chars:
-            chars.detect_collisions(chars)
-
-        blocks.detect_impacts(bullets)
-        chars.detect_impacts(bullets)
-        chars.detect_objectives(level.objectives)
+        level.detect_collisions(chars)
 
         # terminar ronda
-        if level.is_over():
+        if level.is_over(chars):
+
             level.end(chars)
             level_num += 1
 
@@ -160,28 +180,25 @@ def main():
                 running = False
             else:
                 level = levels[level_num]
-                platforms = level_platforms[level_num]
+                level.bullets.empty()
 
         if len(chars) == 0:
             running = False
 
         # dibujar
         screen.fill((25, 115, 200))
-        blocks.draw(screen)
-        platforms.draw(screen)
         level.draw(screen)
         chars.draw(screen)
-        bullets.draw(screen)
 
         # actualizar y esperar un tick
         pygame.display.flip()
         clock.tick(fps)
 
     # pantalla final
-    titulo = gen_text("Game Over", height=100, color=(20, 0, 0))
-    subtitulo = gen_text("Presiona espacio para empezar de nuevo", height=30, color=(255, 255, 255))
-    pos = titulo.get_rect()
-    pos.center = (screen_width / 2, screen_height / 2)
+    titulo = Text("Game Over", screen_width / 2, screen_height / 2,
+                  height=100, color=(20, 0, 0), center=True)
+    subtitulo = Text("Presiona espacio para empezar de nuevo", screen_width / 2, screen_height / 2 + 100,
+                     height=30, color=(255, 255, 255), center=True)
 
     running = True
     while running:
@@ -202,8 +219,8 @@ def main():
         screen.fill((25, 115, 200))
         blocks.draw(screen)
         chars.draw(screen)
-        screen.blit(titulo, pos)
-        screen.blit(subtitulo, pos.move(0, 100))
+        titulo.draw(screen)
+        subtitulo.draw(screen)
 
         # actualizar y esperar un tick
         pygame.display.flip()

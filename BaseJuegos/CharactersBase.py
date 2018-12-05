@@ -2,8 +2,18 @@ import pygame
 
 
 class Char(pygame.sprite.Sprite):
+    """
+    Personaje base, permite detectar colisiones con otros sprites.
+    """
 
-    def __init__(self, width, height, x, y, img, max_life=100):
+    def __init__(self, width, height, x, y, img):
+        """
+        :param width: ancho del personake
+        :param height: alto del personaje
+        :param x: posición en eje x
+        :param y: posición en eje y
+        :param img: imagen del personaje
+        """
         pygame.sprite.Sprite.__init__(self)
 
         # imagen a mostrar cada vez que se llama draw()
@@ -11,22 +21,8 @@ class Char(pygame.sprite.Sprite):
         self.image = pygame.transform.smoothscale(self.image, (width, height))
 
         # posición
-        self.width = width
-        self.height = height
         self.rect = self.image.get_rect().move(x, y)
         self.old_rect = self.rect.copy()
-
-        # vida
-        self.max_life = max_life
-        self.life = max_life
-
-        self.life_frame = pygame.Surface([width, 4])
-        self.life_frame.fill((255, 0, 0))
-        self.life_bar = pygame.Surface([width, 4])
-        self.life_bar.fill((0, 255, 0))
-
-        # objetivos
-        self.objectives = set()
 
     def move(self, dx=0, dy=0):
         self.rect.move_ip(dx, dy)
@@ -34,27 +30,7 @@ class Char(pygame.sprite.Sprite):
 
     def draw(self, screen):
         screen.blit(self.image, self.rect)
-
-        self.draw_life(screen)
-        self.draw_objectives(screen)
-
         self.old_rect = self.rect.copy()
-        return
-
-    def draw_life(self, screen):
-        screen.blit(self.life_frame, self.rect.move(0, -10))
-        current_width = int(self.width * self.life / self.max_life)
-        screen.blit(pygame.transform.smoothscale(self.life_bar, (current_width, 4)),
-                    self.rect.move(0, -10))
-        return
-
-    def draw_objectives(self, screen):
-        if len(self.objectives) > 0:
-            img = list(self.objectives)[0].image.copy()
-            img = pygame.transform.smoothscale(img, (10, 10))
-
-            for i in range(len(self.objectives)):
-                screen.blit(img, self.rect.move(2, 2 + 12 * i).topright)
         return
 
     def detect_collisions(self, group, dokill=False):
@@ -114,65 +90,33 @@ class Char(pygame.sprite.Sprite):
             return True
         return False
 
-    def detect_impacts(self, group, dokill=True):
-        collisions = pygame.sprite.spritecollide(self, group, dokill=dokill)
-
-        for sprite in collisions:
-            self.impact(sprite)
-        return
-
-    def impact(self, sprite):
-        sprite.impact(self)
-
-        if self.life <= 0:
-            self.kill()
-        return
-
-    def detect_objectives(self, group):
-        collisions = pygame.sprite.spritecollide(self, group, dokill=False)
-
-        for sprite in collisions:
-            self.get_objective(sprite)
-
-    def get_objective(self, objective):
-        self.objectives.add(objective)
-        return
-
-    def clear_objectives(self):
-        self.objectives.clear()
-        return
-
 
 class GravityChar(Char):
+    """
+    Agrega gravedad y saltos al personaje, se modifica collide para actualizar standing y vy al chocar
+    """
 
     def __init__(self, width, height, x, y, img, g=1, jumpspeed=15):
+        """
+        :param g: gravidad a aplicar en cada ciclo, para valores menores a 1 no funciona bien.
+        :param jumpspeed: velocidad en x al momento de saltar
+        """
         Char.__init__(self, width, height, x, y, img)
 
         self.g = g
         self.jumpspeed = jumpspeed
         self.vy = 0
-
-        self.jumptries = 0
-        self.maxjumptries = 4
         self.standing = False
 
     def update(self):
-        if self.standing and self.jumptries > 0:
-            self.vy = -self.jumpspeed
-            self.standing = False
-
-        self.jumptries -= 1
         self.vy += self.g
-        self.rect.y += self.vy
+        self.move(0, self.vy)
         self.standing = False
 
     def jump(self):
         if self.standing:
             self.vy = -self.jumpspeed
             self.standing = False
-        else:
-            self.jumptries = self.maxjumptries
-
         return
 
     def collide(self, sprite):
@@ -197,61 +141,11 @@ class GravityChar(Char):
         return
 
 
-class Kirby(GravityChar):
-
-    def __init__(self, width, height, x, y, img, g=0.5, jumpspeed=8, max_jumps=3):
-        GravityChar.__init__(self, width, height, x, y, img, g, jumpspeed)
-
-        self.max_jumps = max_jumps
-        self.jumps = max_jumps
-
-    def jump(self):
-        if self.jumps > 0:
-            self.vy = -self.jumpspeed
-            self.jumps -= 1
-
-        return
-
-    def draw(self, screen):
-        img = self.image.copy()
-        rect = self.rect.copy()
-
-        if self.vy < 0:
-            infl = (-self.vy) ** 0.5
-            rect = rect.inflate(infl * 3, infl)
-            img = pygame.transform.smoothscale(img, rect.size)
-
-        screen.blit(img, rect.topleft)
-
-        self.draw_life(screen)
-        self.draw_objectives(screen)
-
-        self.old_rect = self.rect.copy()
-        return
-
-    def collide(self, sprite):
-        dx = self.rect.x - self.old_rect.x
-        dy = self.rect.y - self.old_rect.y
-
-        if dx > 0:  # choque hacia la derecha
-            sprite.collide_left(self)
-
-        elif dx < 0:  # choque hacia la izquierda
-            sprite.collide_right(self)
-
-        if dy > 0:  # choque hacia abajo
-            if sprite.collide_top(self):
-                self.vy = 0
-                self.jumps = self.max_jumps
-
-        elif dy < 0:  # choque hacia arriba
-            if sprite.collide_bottom(self):
-                self.vy = 0
-
-        return
-
-
 class CustomGroup(pygame.sprite.Group):
+    """
+    Permite manejar los caracteres para usar su propio método draw (que actualiza la posición anterior)
+    y la detección de colisiones.
+    """
 
     def __init__(self, *sprites):
         pygame.sprite.Group.__init__(self, *sprites)
@@ -262,18 +156,13 @@ class CustomGroup(pygame.sprite.Group):
         return
 
     def detect_collisions(self, *groups, dokill=False):
+        """
+        Detecta las colisiones entre cada objeto del grup y los grupos entregados
+
+        :param groups:
+        :param dokill: determina si se eliminan los sprites con los que se choca.
+        """
         for group in groups:
             for sprite in self.sprites():
                 sprite.detect_collisions(group, dokill)
         return
-
-    def detect_impacts(self, *groups, dokill=True):
-        for group in groups:
-            for sprite in self.sprites():
-                sprite.detect_impacts(group, dokill)
-        return
-
-    def detect_objectives(self, *groups):
-        for group in groups:
-            for sprite in self.sprites():
-                sprite.detect_objectives(group)
