@@ -21,15 +21,15 @@ def main():
     screen = pygame.display.set_mode((screen_width, screen_height))
     pygame.display.set_caption("tutorial FrenCoins")
     # TODO: reescalar imagen para evitar problemas con trasparencia
-    pygame.display.set_icon(pygame.transform.smoothscale(pygame.image.load('img/FrenCoin.png'), (32, 32)))
+    pygame.display.set_icon(pygame.transform.smoothscale(pygame.image.load('static/img/FrenCoin.png'), (32, 32)))
 
     # personajes
     char_size = 40
 
-    player1 = GravityChar(char_size, char_size, 600, 200, img='img/Tomimi.png', jumpspeed=18)
-    player2 = GravityChar(char_size, char_size, 100, 350, img='img/LittleFrank.png', jumpspeed=18)
-    player3 = GravityChar(char_size, char_size, 300, 200, img='img/Peiblv3.png', jumpspeed=18)
-    player4 = GravityChar(char_size, char_size, 500, 100, img='img/Tito.png', jumpspeed=18)
+    player1 = GravityChar(char_size, char_size, 600, 200, img='static/img/Tomimi.png', jumpspeed=18)
+    player2 = GravityChar(char_size, char_size, 100, 350, img='static/img/LittleFrank.png', jumpspeed=18)
+    player3 = GravityChar(char_size, char_size, 300, 200, img='static/img/Peiblv3.png', jumpspeed=18)
+    player4 = GravityChar(char_size, char_size, 500, 100, img='static/img/Tito.png', jumpspeed=18)
 
     chars = CustomGroup([player1, player2, player3])
     chars_static = [player1, player2, player3, player4]  # lista para asociar con joysticks
@@ -113,7 +113,7 @@ def main():
         a_pressed.append(0)
         print(joystick.get_name())
 
-    joy_threshold = 0.4
+    joystick_threshold = 0.4
 
     running = True
     while running:
@@ -134,9 +134,9 @@ def main():
         # joysticks
         for i in range(len(joysticks)):
             if i < len(chars_static):
-                if joysticks[i].get_axis(0) > joy_threshold:
+                if joysticks[i].get_axis(0) > joystick_threshold:
                     chars_static[i].move(5, 0)
-                if joysticks[i].get_axis(0) < -joy_threshold:
+                if joysticks[i].get_axis(0) < -joystick_threshold:
                     chars_static[i].move(-5, 0)
 
                 if joysticks[i].get_button(0):

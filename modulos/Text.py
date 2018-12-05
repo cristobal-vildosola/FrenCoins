@@ -10,7 +10,7 @@ class Text:
     def __init__(self, text, x, y, color=(0, 0, 0), height=30, center=False, antialias=True):
         global fonts
         if height not in fonts:
-            fonts[height] = pygame.font.Font(None, height)
+            fonts[height] = pygame.font.Font("static/freesansbold.ttf", height)
 
         self.text = fonts[height].render(text, antialias, color)
 

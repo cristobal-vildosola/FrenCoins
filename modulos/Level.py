@@ -55,8 +55,8 @@ class Level:
 
         number_color = (200, 200, 200)
         if self.time < 5:
-            number_color = (255, 20, 20)
-        Text(str(round(self.time, 1)), 400, 16, number_color, center=True, height=40).draw(screen)
+            number_color = (255, 0, 0)
+        Text(str(round(self.time, 1)), 400, 16, number_color, center=True, height=30).draw(screen)
 
         self.cannons.draw(screen)
 
@@ -65,6 +65,7 @@ class Level:
             for objective in self.objectives:
                 objective.draw(screen)
         else:
+            # mostrar tiempo de preparación
             Text(str(int(self.prep_time) + 1), 400, 300, (200, 200, 200), center=True,
                  height=int(80 + self.prep_time % 1 * 60)).draw(screen)
 
@@ -95,7 +96,7 @@ class Objective(pygame.sprite.Sprite):
 
     def __init__(self, pos):
         pygame.sprite.Sprite.__init__(self)
-        self.image = pygame.image.load('img/FrenCoin.png').convert_alpha()
+        self.image = pygame.image.load('static/img/FrenCoin.png')
         self.image = pygame.transform.smoothscale(self.image, (50, 50))
 
         self.rect = self.image.get_rect().move(pos)
