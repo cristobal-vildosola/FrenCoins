@@ -20,8 +20,7 @@ def main():
     screen_width, screen_height = 800, 600
     screen = pygame.display.set_mode((screen_width, screen_height))
     pygame.display.set_caption("tutorial FrenCoins")
-    # TODO: reescalar imagen para evitar problemas con trasparencia
-    pygame.display.set_icon(pygame.transform.smoothscale(pygame.image.load('static/img/FrenCoin.png'), (32, 32)))
+    pygame.display.set_icon(pygame.image.load('static/img/favicon.png'))
 
     # personajes
     char_size = 40
@@ -31,7 +30,7 @@ def main():
     player3 = GravityChar(char_size, char_size, 300, 200, img='static/img/Peiblv3.png', jumpspeed=18)
     player4 = GravityChar(char_size, char_size, 500, 100, img='static/img/Tito.png', jumpspeed=18)
 
-    chars = CustomGroup([player1, player2, player3])
+    chars = CustomGroup([player1, player2])
     chars_static = [player1, player2, player3, player4]  # lista para asociar con joysticks
 
     # bloques
@@ -92,7 +91,7 @@ def main():
                     blocks=blocks, platforms=CustomGroup(plat1, plat2, plat3, plat4, plat5),
                     cannons=CustomGroup(cannon1), fps=fps),
 
-              Level(30, [Objective((50, 100))], blocks=blocks, cannons=CustomGroup(cannon2, cannon3),
+              Level(30, [Objective((50, 50))], blocks=blocks, cannons=CustomGroup(cannon2, cannon3),
                     platforms=CustomGroup(plat2, plat3), fps=fps),
 
               Level(15, [Objective((350, 300))], blocks=blocks, cannons=CustomGroup(cannon4, cannon5),
@@ -121,7 +120,8 @@ def main():
         # eventos
         for event in pygame.event.get():
             if event.type == pygame.QUIT:
-                running = False
+                pygame.quit()
+                return
 
             elif event.type == pygame.KEYDOWN:
                 if event.key == pygame.K_UP:
@@ -130,6 +130,8 @@ def main():
                     player2.jump()
                 if event.key == pygame.K_i:
                     player3.jump()
+                if event.key == pygame.K_t:
+                    player4.jump()
 
         # joysticks
         for i in range(len(joysticks)):
@@ -163,6 +165,11 @@ def main():
         if pressed[pygame.K_l]:
             player3.move(dx=5)
 
+        if pressed[pygame.K_f]:
+            player4.move(dx=-5)
+        if pressed[pygame.K_h]:
+            player4.move(dx=5)
+
         # mov automático
         chars.update()
         level.update()
@@ -195,8 +202,14 @@ def main():
         clock.tick(fps)
 
     # pantalla final
-    titulo = Text("Game Over", screen_width / 2, screen_height / 2,
-                  height=100, color=(20, 0, 0), center=True)
+    texto = "Game Over"
+    color_texto = (255, 0, 0)
+    if len(chars) > 0:
+        texto = "Congratules!"
+        color_texto = (0, 230, 0)
+
+    titulo = Text(texto, screen_width / 2, screen_height / 2,
+                  height=100, color=color_texto, center=True)
     subtitulo = Text("Presiona espacio para empezar de nuevo", screen_width / 2, screen_height / 2 + 100,
                      height=30, color=(255, 255, 255), center=True)
 
@@ -205,15 +218,19 @@ def main():
         # eventos
         for event in pygame.event.get():
             if event.type == pygame.QUIT:
-                running = False
+                pygame.quit()
+                return
 
             if event.type == pygame.KEYDOWN:
                 if event.key == pygame.K_SPACE:
                     main()
-                    break
+                    return
 
         chars.update()
         chars.detect_collisions(blocks)
+
+        for char in chars:
+            char.jump()
 
         # dibujar
         screen.fill((25, 115, 200))

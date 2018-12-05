@@ -86,6 +86,7 @@ class Cannon(Block):
 
     def shoot(self):
         self.bullet_group.add(
-            Bullet(self.bullet_radius, self.rect.center[0], self.rect.center[1],
+            Bullet(self.bullet_radius,
+                   self.rect.center[0] - self.bullet_radius / 2, self.rect.center[1] - self.bullet_radius / 2,
                    self.bullet_vx, self.bullet_vy, self.bullet_damage))
         return
