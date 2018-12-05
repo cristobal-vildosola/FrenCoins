@@ -36,8 +36,8 @@ class Bullet(pygame.sprite.Sprite):
 
 class Cannon(Block):
 
-    def __init__(self, x, y, bullet_group, frecuencia=60,
-                 bullet_vx=0, bullet_vy=0, bullet_radius=5, bullet_damage=10):
+    def __init__(self, x, y, frecuencia=60,
+                 bullet_vx=0, bullet_vy=0, bullet_radius=5, bullet_damage=10, bullet_group=None):
         pygame.sprite.Sprite.__init__(self)
 
         # posición
@@ -66,18 +66,21 @@ class Cannon(Block):
         self.bullet_radius = bullet_radius
         self.bullet_damage = bullet_damage
 
-    def draw(self, screen):
-        screen.blit(self.image, self.rect)
-
-    def shoot(self):
-        self.bullet_group.add(
-            Bullet(self.bullet_radius, self.rect.center[0], self.rect.center[1],
-                   self.bullet_vx, self.bullet_vy, self.bullet_damage)
-        )
-
     def update(self, *args):
         self.iteracion += 1
 
         if self.iteracion == self.frecuencia:
             self.shoot()
             self.iteracion = 0
+
+    def draw(self, screen):
+        screen.blit(self.image, self.rect)
+
+    def set_bullet_group(self, bullet_group):
+        self.bullet_group = bullet_group
+
+    def shoot(self):
+        self.bullet_group.add(
+            Bullet(self.bullet_radius, self.rect.center[0], self.rect.center[1],
+                   self.bullet_vx, self.bullet_vy, self.bullet_damage)
+        )
