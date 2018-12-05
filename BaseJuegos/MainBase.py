@@ -2,9 +2,9 @@ import os
 
 import pygame
 
-from Blocks import Block, Platform
-from CharactersBase import GravityChar, CustomGroup
-from Text import Text
+from BaseJuegos.Blocks import Block, Platform
+from BaseJuegos.CharactersBase import GravityChar, CustomGroup
+from modulos.Text import Text
 
 # centrar ventana
 os.environ['SDL_VIDEO_CENTERED'] = '1'
@@ -23,8 +23,8 @@ def main():
     char_size = 50
 
     # GravityChar(ancho, alto, pos_x, pos_y)
-    player1 = GravityChar(char_size, char_size, 600, 200, img='img/Pina.png', jumpspeed=18)
-    player2 = GravityChar(char_size, char_size, 300, 200, img='img/Tomimi.png', jumpspeed=18)
+    player1 = GravityChar(char_size, char_size, 600, 200, img='../img/Pina.png', jumpspeed=18)
+    player2 = GravityChar(char_size, char_size, 300, 200, img='../img/Tomimi.png', jumpspeed=18)
 
     chars = CustomGroup([player1, player2])
 

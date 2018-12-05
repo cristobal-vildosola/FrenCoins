@@ -2,11 +2,11 @@ import os
 
 import pygame
 
-from Blocks import Block, Platform
-from Characters import GravityChar, CustomGroup
-from Level import Level, Objective
-from Text import Text
-from Weapons import Cannon
+from modulos.Blocks import Block, Platform
+from modulos.Characters import GravityChar, CustomGroup
+from modulos.Level import Level, Objective
+from modulos.Text import Text
+from modulos.Weapons import Cannon
 
 # centrar ventana
 os.environ['SDL_VIDEO_CENTERED'] = '1'

@@ -1,6 +1,6 @@
 import pygame
-from Text import Text
-from Characters import CustomGroup
+from modulos.Text import Text
+from modulos.Characters import CustomGroup
 
 
 class Level:

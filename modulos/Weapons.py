@@ -1,6 +1,6 @@
 import pygame
 
-from Blocks import Block
+from modulos.Blocks import Block
 import math
 
 
@@ -47,13 +47,15 @@ class Cannon(Block):
         # voltear horizontalmente
         self.image = pygame.transform.flip(self.image, bullet_vx < 0, False)
 
-        center = self.image.get_rect().move(x, y).center  # centro original
+        # obtener rectángulo antes de rotar para evitar que cambie el tamaño para colisiones
+        self.rect = self.image.get_rect().move(x, y)
 
         # rotar según angulo de disparo
         self.image = pygame.transform.rotate(self.image, -math.degrees(math.atan(bullet_vy / bullet_vx)))
-        # obtener rect y corregir posición
-        self.rect = self.image.get_rect()
-        self.rect.center = center
+
+        # obtener rect y corregir posición de dibujo
+        self.pos = self.image.get_rect()
+        self.pos.center = self.rect.center
 
         # para lanzar proyectiles
         self.bullet_group = bullet_group
@@ -72,15 +74,18 @@ class Cannon(Block):
         if self.iteracion == self.frecuencia:
             self.shoot()
             self.iteracion = 0
+        return
 
     def draw(self, screen):
-        screen.blit(self.image, self.rect)
+        screen.blit(self.image, self.pos)
+        return
 
     def set_bullet_group(self, bullet_group):
         self.bullet_group = bullet_group
+        return
 
     def shoot(self):
         self.bullet_group.add(
             Bullet(self.bullet_radius, self.rect.center[0], self.rect.center[1],
-                   self.bullet_vx, self.bullet_vy, self.bullet_damage)
-        )
+                   self.bullet_vx, self.bullet_vy, self.bullet_damage))
+        return
