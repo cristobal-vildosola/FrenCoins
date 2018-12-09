@@ -23,12 +23,10 @@ def main():
     pygame.display.set_icon(pygame.image.load('static/img/favicon.png'))
 
     # personajes
-    char_size = 40
-
-    player1 = GravityChar(char_size, char_size, 600, 200, img='static/img/Pina.png', jumpspeed=18)
-    player2 = GravityChar(char_size, char_size, 100, 350, img='static/img/Anouk.png', jumpspeed=18)
-    player3 = GravityChar(char_size, char_size, 300, 200, img='static/img/Peiblv3.png', jumpspeed=18)
-    player4 = GravityChar(char_size, char_size, 500, 100, img='static/img/Tito.png', jumpspeed=18)
+    player1 = GravityChar(0, 600, 200, img='static/img/Pina.png')
+    player2 = GravityChar(1, 100, 350, img='static/img/Anouk.png')
+    player3 = GravityChar(2, 300, 200, img='static/img/Peiblv3.png')
+    player4 = GravityChar(3, 500, 100, img='static/img/Tito.png')
 
     chars = CustomGroup([player1, player2])
     chars_static = [player1, player2, player3, player4]  # lista para asociar con joysticks

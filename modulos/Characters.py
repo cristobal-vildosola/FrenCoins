@@ -1,12 +1,15 @@
 import pygame
 
+char_size = 40
+
 
 class Char(pygame.sprite.Sprite):
     LEFT = 0
     RIGHT = 1
 
-    def __init__(self, width, height, x, y, img, max_life=100):
+    def __init__(self, player_id, x, y, img, width=char_size, height=char_size, max_life=100):
         pygame.sprite.Sprite.__init__(self)
+        self.id = player_id
 
         # imagen a mostrar cada vez que se llama draw()
         self.image = pygame.image.load(img).convert_alpha()
@@ -162,8 +165,8 @@ class Char(pygame.sprite.Sprite):
 
 class GravityChar(Char):
 
-    def __init__(self, width, height, x, y, img, g=1, jumpspeed=15):
-        Char.__init__(self, width, height, x, y, img)
+    def __init__(self, id, x, y, img, width=char_size, height=char_size, g=1, jumpspeed=18):
+        Char.__init__(self, id, x, y, img, width, height)
 
         self.g = g
         self.jumpspeed = jumpspeed
