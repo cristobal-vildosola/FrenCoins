@@ -151,24 +151,24 @@ def main():
         # teclas apretadas
         pressed = pygame.key.get_pressed()
         if pressed[pygame.K_LEFT]:
-            player1.move(dx=-5)
+            player1.move_left()
         if pressed[pygame.K_RIGHT]:
-            player1.move(dx=5)
+            player1.move_right()
 
         if pressed[pygame.K_a]:
-            player2.move(dx=-5)
+            player2.move_left()
         if pressed[pygame.K_d]:
-            player2.move(dx=5)
+            player2.move_right()
 
         if pressed[pygame.K_j]:
-            player3.move(dx=-5)
+            player3.move_left()
         if pressed[pygame.K_l]:
-            player3.move(dx=5)
+            player3.move_right()
 
         if pressed[pygame.K_f]:
-            player4.move(dx=-5)
+            player4.move_left()
         if pressed[pygame.K_h]:
-            player4.move(dx=5)
+            player4.move_right()
 
         # mov automático
         chars.update()

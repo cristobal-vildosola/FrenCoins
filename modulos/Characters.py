@@ -2,6 +2,8 @@ import pygame
 
 
 class Char(pygame.sprite.Sprite):
+    LEFT = 0
+    RIGHT = 1
 
     def __init__(self, width, height, x, y, img, max_life=100):
         pygame.sprite.Sprite.__init__(self)
@@ -9,6 +11,7 @@ class Char(pygame.sprite.Sprite):
         # imagen a mostrar cada vez que se llama draw()
         self.image = pygame.image.load(img).convert_alpha()
         self.image = pygame.transform.smoothscale(self.image, (width, height))
+        self.direction = self.LEFT
 
         # posición
         self.width = width
@@ -32,8 +35,22 @@ class Char(pygame.sprite.Sprite):
         self.rect.move_ip(dx, dy)
         return
 
+    def move_right(self):
+        self.move(dx=5)
+        self.direction = self.RIGHT
+        return
+
+    def move_left(self):
+        self.move(dx=-5)
+        self.direction = self.LEFT
+        return
+
     def draw(self, screen):
-        screen.blit(self.image, self.rect)
+        image = self.image
+        if self.direction == self.RIGHT:
+            image = pygame.transform.flip(image, True, False)
+
+        screen.blit(image, self.rect)
 
         self.draw_life(screen)
         self.draw_objectives(screen)
