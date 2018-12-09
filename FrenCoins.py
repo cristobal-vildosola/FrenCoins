@@ -19,14 +19,14 @@ def main():
 
     screen_width, screen_height = 800, 600
     screen = pygame.display.set_mode((screen_width, screen_height))
-    pygame.display.set_caption("tutorial FrenCoins")
+    pygame.display.set_caption("FrenCoins")
     pygame.display.set_icon(pygame.image.load('static/img/favicon.png'))
 
     # personajes
     char_size = 40
 
-    player1 = GravityChar(char_size, char_size, 600, 200, img='static/img/Tomimi.png', jumpspeed=18)
-    player2 = GravityChar(char_size, char_size, 100, 350, img='static/img/LittleFrank.png', jumpspeed=18)
+    player1 = GravityChar(char_size, char_size, 600, 200, img='static/img/Pina.png', jumpspeed=18)
+    player2 = GravityChar(char_size, char_size, 100, 350, img='static/img/Anouk.png', jumpspeed=18)
     player3 = GravityChar(char_size, char_size, 300, 200, img='static/img/Peiblv3.png', jumpspeed=18)
     player4 = GravityChar(char_size, char_size, 500, 100, img='static/img/Tito.png', jumpspeed=18)
 
@@ -187,7 +187,6 @@ def main():
                 running = False
             else:
                 level = levels[level_num]
-                level.bullets.empty()
 
         if len(chars) == 0:
             running = False
@@ -210,7 +209,7 @@ def main():
 
     titulo = Text(texto, screen_width / 2, screen_height / 2,
                   height=100, color=color_texto, center=True)
-    subtitulo = Text("Presiona espacio para empezar de nuevo", screen_width / 2, screen_height / 2 + 100,
+    subtitulo = Text("Presiona espacio o A para empezar de nuevo", screen_width / 2, screen_height / 2 + 100,
                      height=30, color=(255, 255, 255), center=True)
 
     running = True
@@ -223,6 +222,12 @@ def main():
 
             if event.type == pygame.KEYDOWN:
                 if event.key == pygame.K_SPACE:
+                    main()
+                    return
+
+        for i in range(len(joysticks)):
+            if i < len(chars_static):
+                if joysticks[i].get_button(0):
                     main()
                     return
 
