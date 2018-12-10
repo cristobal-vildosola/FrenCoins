@@ -7,6 +7,7 @@ from modulos.Characters import GravityChar, CustomGroup
 from modulos.Level import Level, Objective
 from modulos.Text import Text
 from modulos.Weapons import Cannon
+from modulos.Sounds import play_background, jump_sound
 
 # centrar ventana
 os.environ['SDL_VIDEO_CENTERED'] = '1'
@@ -112,6 +113,8 @@ def main():
 
     joystick_threshold = 0.4
 
+    play_background()
+    jump_sound.set_volume(1)
     running = True
     while running:
 
@@ -209,6 +212,8 @@ def main():
                   height=100, color=color_texto, center=True)
     subtitulo = Text("Presiona espacio o A para empezar de nuevo", screen_width / 2, screen_height / 2 + 100,
                      height=30, color=(255, 255, 255), center=True)
+
+    jump_sound.set_volume(0)
 
     running = True
     while running:

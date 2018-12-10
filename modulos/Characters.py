@@ -1,4 +1,5 @@
 import pygame
+from modulos.Sounds import play_jump, play_hit, play_coin
 
 char_size = 40
 
@@ -139,6 +140,7 @@ class Char(pygame.sprite.Sprite):
 
         for sprite in collisions:
             self.impact(sprite)
+            play_hit(self.id)
         return
 
     def impact(self, sprite):
@@ -155,7 +157,9 @@ class Char(pygame.sprite.Sprite):
             self.get_objective(sprite)
 
     def get_objective(self, objective):
-        self.objectives.add(objective)
+        if objective not in self.objectives:
+            self.objectives.add(objective)
+            play_coin()
         return
 
     def clear_objectives(self):
@@ -165,8 +169,8 @@ class Char(pygame.sprite.Sprite):
 
 class GravityChar(Char):
 
-    def __init__(self, id, x, y, img, width=char_size, height=char_size, g=1, jumpspeed=18):
-        Char.__init__(self, id, x, y, img, width, height)
+    def __init__(self, player_id, x, y, img, width=char_size, height=char_size, g=1, jumpspeed=18):
+        Char.__init__(self, player_id, x, y, img, width, height)
 
         self.g = g
         self.jumpspeed = jumpspeed
@@ -180,6 +184,7 @@ class GravityChar(Char):
         if self.standing and self.jumptries > 0:
             self.vy = -self.jumpspeed
             self.standing = False
+            play_jump(self.id)
 
         self.jumptries -= 1
         self.vy += self.g
@@ -187,12 +192,7 @@ class GravityChar(Char):
         self.standing = False
 
     def jump(self):
-        if self.standing:
-            self.vy = -self.jumpspeed
-            self.standing = False
-        else:
-            self.jumptries = self.maxjumptries
-
+        self.jumptries = self.maxjumptries
         return
 
     def collide(self, sprite):

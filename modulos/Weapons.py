@@ -1,6 +1,7 @@
 import pygame
 
 from modulos.Blocks import Block
+from modulos.Sounds import play_fire
 import math
 
 
@@ -89,4 +90,5 @@ class Cannon(Block):
             Bullet(self.bullet_radius,
                    self.rect.center[0] - self.bullet_radius / 2, self.rect.center[1] - self.bullet_radius / 2,
                    self.bullet_vx, self.bullet_vy, self.bullet_damage))
+        play_fire()
         return

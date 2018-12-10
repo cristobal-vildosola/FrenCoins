@@ -1,5 +1,6 @@
 import pygame
 
+pygame.mixer.init()
 pygame.mixer.set_num_channels(12)
 channels = [
     pygame.mixer.Channel(0),  # player1 jump
@@ -12,29 +13,37 @@ channels = [
     pygame.mixer.Channel(7),  # player4 hit
     pygame.mixer.Channel(8),  # cannons
     pygame.mixer.Channel(9),  # coins
+    pygame.mixer.Channel(10),  # fondo
+    pygame.mixer.Channel(11),  #
 ]
 
-jump_sound = pygame.mixer.Sound("static/sounds/")
-hit_sound = pygame.mixer.Sound("static/sounds/")
-fire_sound = pygame.mixer.Sound("static/sounds/")
-coin_sound = pygame.mixer.Sound("static/sounds/")
+jump_sound = pygame.mixer.Sound("static/sounds/ha.wav")
+hit_sound = pygame.mixer.Sound("static/sounds/ah.wav")
+fire_sound = pygame.mixer.Sound("static/sounds/pium.wav")
+coin_sound = pygame.mixer.Sound("static/sounds/prim.wav")
+background_sound = pygame.mixer.Sound("static/sounds/mii.wav")
 
 
-def jump(player_id):
+def play_jump(player_id):
     channels[player_id].play(jump_sound)
     return
 
 
-def hit(player_id):
+def play_hit(player_id):
     channels[player_id + 4].play(hit_sound)
     return
 
 
-def fire():
+def play_fire():
     channels[8].play(fire_sound)
     return
 
 
-def coin():
+def play_coin():
     channels[9].play(coin_sound)
+    return
+
+
+def play_background():
+    channels[10].play(background_sound, loops=-1)
     return
