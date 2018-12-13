@@ -2,6 +2,7 @@ import pygame
 
 from modulos.Blocks import Block
 from modulos.Sounds import play_fire
+from modulos.utils import path
 import math
 
 
@@ -42,7 +43,7 @@ class Cannon(Block):
         pygame.sprite.Sprite.__init__(self)
 
         # posición
-        self.image = pygame.image.load('static/img/cannon.png')
+        self.image = pygame.image.load(path('static/img/cannon.png'))
         # escalar a tamaño
         self.image = pygame.transform.smoothscale(self.image, (50, 50))
         # voltear horizontalmente

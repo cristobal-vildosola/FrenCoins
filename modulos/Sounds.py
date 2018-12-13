@@ -1,5 +1,7 @@
 import pygame
 
+from modulos.utils import path
+
 pygame.mixer.init()
 pygame.mixer.set_num_channels(12)
 channels = [
@@ -17,11 +19,11 @@ channels = [
     pygame.mixer.Channel(11),  #
 ]
 
-jump_sound = pygame.mixer.Sound("static/sounds/ha.wav")
-hit_sound = pygame.mixer.Sound("static/sounds/ah.wav")
-fire_sound = pygame.mixer.Sound("static/sounds/pium.wav")
-coin_sound = pygame.mixer.Sound("static/sounds/prim.wav")
-background_sound = pygame.mixer.Sound("static/sounds/mii.wav")
+jump_sound = pygame.mixer.Sound(path("static/sounds/ha.wav"))
+hit_sound = pygame.mixer.Sound(path("static/sounds/ah.wav"))
+fire_sound = pygame.mixer.Sound(path("static/sounds/pium.wav"))
+coin_sound = pygame.mixer.Sound(path("static/sounds/prim.wav"))
+background_sound = pygame.mixer.Sound(path("static/sounds/mii.wav"))
 
 
 def play_jump(player_id):

@@ -1,5 +1,7 @@
 import pygame
 
+from modulos.utils import path
+
 # los fonts se tienen que inicializar, para no hacerlo cada vez que
 # creo un nuevo texto los guardo en un diccionario según tamaño
 fonts = {}
@@ -10,7 +12,7 @@ class Text:
     def __init__(self, text, x, y, color=(0, 0, 0), height=30, center=False, antialias=True):
         global fonts
         if height not in fonts:
-            fonts[height] = pygame.font.Font("static/freesansbold.ttf", height)
+            fonts[height] = pygame.font.Font(path("static/freesansbold.ttf"), height)
 
         self.text = fonts[height].render(text, antialias, color)
 

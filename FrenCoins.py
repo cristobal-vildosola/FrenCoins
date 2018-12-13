@@ -5,9 +5,10 @@ import pygame
 from modulos.Blocks import Block, Platform
 from modulos.Characters import GravityChar, CustomGroup
 from modulos.Level import Level, Objective
+from modulos.Sounds import play_background, jump_sound
 from modulos.Text import Text
 from modulos.Weapons import Cannon
-from modulos.Sounds import play_background, jump_sound
+from modulos.utils import path
 
 # centrar ventana
 os.environ['SDL_VIDEO_CENTERED'] = '1'
@@ -21,13 +22,13 @@ def main():
     screen_width, screen_height = 800, 600
     screen = pygame.display.set_mode((screen_width, screen_height))
     pygame.display.set_caption("FrenCoins")
-    pygame.display.set_icon(pygame.image.load('static/img/favicon.png'))
+    pygame.display.set_icon(pygame.image.load(path('static/img/favicon.png')))
 
     # personajes
-    player1 = GravityChar(0, 600, 200, img='static/img/Pina.png')
-    player2 = GravityChar(1, 100, 350, img='static/img/Anouk.png')
-    player3 = GravityChar(2, 300, 200, img='static/img/Peiblv3.png')
-    player4 = GravityChar(3, 500, 100, img='static/img/Tito.png')
+    player1 = GravityChar(0, 600, 200, img=path('static/img/Pina.png'))
+    player2 = GravityChar(1, 100, 350, img=path('static/img/Anouk.png'))
+    player3 = GravityChar(2, 300, 200, img=path('static/img/Peiblv3.png'))
+    player4 = GravityChar(3, 500, 100, img=path('static/img/Tito.png'))
 
     chars = CustomGroup([player1, player2])
     chars_static = [player1, player2, player3, player4]  # lista para asociar con joysticks

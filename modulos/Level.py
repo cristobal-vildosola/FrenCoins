@@ -1,6 +1,7 @@
 import pygame
 from modulos.Text import Text
 from modulos.Characters import CustomGroup
+from modulos.utils import path
 
 
 class Level:
@@ -96,7 +97,7 @@ class Objective(pygame.sprite.Sprite):
 
     def __init__(self, pos):
         pygame.sprite.Sprite.__init__(self)
-        self.image = pygame.image.load('static/img/FrenCoin.png')
+        self.image = pygame.image.load(path('static/img/FrenCoin.png'))
         self.image = pygame.transform.smoothscale(self.image, (50, 50))
 
         self.rect = self.image.get_rect().move(pos)
