@@ -23,7 +23,7 @@ jump_sound = pygame.mixer.Sound(path("static/sounds/ha.wav"))
 hit_sound = pygame.mixer.Sound(path("static/sounds/ah.wav"))
 fire_sound = pygame.mixer.Sound(path("static/sounds/pium.wav"))
 coin_sound = pygame.mixer.Sound(path("static/sounds/prim.wav"))
-background_sound = pygame.mixer.Sound(path("static/sounds/mii.wav"))
+background_sound = pygame.mixer.Sound(path("static/sounds/mii2.wav"))
 
 
 def play_jump(player_id):
