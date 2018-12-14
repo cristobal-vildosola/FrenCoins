@@ -21,7 +21,7 @@ class Joystick:
         return self.joystick.get_axis(self.x_axis) < -self.treshold
 
     def down(self):
-        return self.joystick.get_axis(self.y_axis) < -self.treshold
+        return self.joystick.get_axis(self.y_axis) > self.treshold
 
     def a_press(self):
         if self.joystick.get_button(0):

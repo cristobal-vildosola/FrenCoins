@@ -26,7 +26,7 @@ def main():
     pygame.display.set_icon(pygame.image.load(path('static/img/favicon.png')))
 
     # personajes
-    player1 = GravityChar(0, 600, 200, img=path('static/img/diggo.png'))
+    player1 = GravityChar(0, 600, 200, img=path('static/img/FatCow2.png'))
     player2 = GravityChar(1, 100, 350, img=path('static/img/Pina.png'))
     player3 = GravityChar(2, 300, 200, img=path('static/img/Peiblv3.png'))
     player4 = GravityChar(3, 500, 100, img=path('static/img/Tito.png'))
@@ -84,7 +84,7 @@ def main():
     cannon7 = Cannon(border_width, border_width,
                      bullet_vx=6, bullet_vy=4)
     cannon8 = Cannon(border_width, height_part * 3 + border_width - 50,
-                     bullet_vx=8, frecuencia=40)
+                     bullet_vx=8, frecuencia=90)
 
     cannon9 = Cannon(border_width + 15, screen_height - border_width - 65,
                      bullet_vx=4, bullet_radius=30, bullet_damage=30)
@@ -98,7 +98,7 @@ def main():
                     platforms=CustomGroup(plat2, plat3),
                     cannons=CustomGroup(cannon2, cannon3), fps=fps),
 
-              Level(30, [Objective((350, 150))], blocks=blocks, platforms=CustomGroup(),
+              Level(30, [Objective((350, 180))], blocks=blocks, platforms=CustomGroup(),
                     cannons=CustomGroup(cannon4, cannon5), fps=fps),
 
               Level(30, [Objective((150, 100)), Objective((600, 100))], blocks=blocks, platforms=CustomGroup(plat1),
