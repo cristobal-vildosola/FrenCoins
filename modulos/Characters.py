@@ -177,7 +177,7 @@ class GravityChar(Char):
         self.vy = 0
 
         self.jumptries = 0
-        self.maxjumptries = 8
+        self.maxjumptries = 4
         self.standing = False
         self.falling = False
 

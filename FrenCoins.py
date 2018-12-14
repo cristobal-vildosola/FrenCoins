@@ -4,6 +4,7 @@ import pygame
 
 from modulos.Blocks import Block, Platform
 from modulos.Characters import GravityChar, CustomGroup
+from modulos.Joystick import XBoxJoystick
 from modulos.Level import Level, Objective
 from modulos.Sounds import play_background, jump_sound
 from modulos.Text import Text
@@ -25,7 +26,7 @@ def main():
     pygame.display.set_icon(pygame.image.load(path('static/img/favicon.png')))
 
     # personajes
-    player1 = GravityChar(0, 600, 200, img=path('static/img/Checho.png'))
+    player1 = GravityChar(0, 600, 200, img=path('static/img/diggo.png'))
     player2 = GravityChar(1, 100, 350, img=path('static/img/Pina.png'))
     player3 = GravityChar(2, 300, 200, img=path('static/img/Peiblv3.png'))
     player4 = GravityChar(3, 500, 100, img=path('static/img/Tito.png'))
@@ -103,21 +104,22 @@ def main():
               Level(30, [Objective((150, 100)), Objective((600, 100))], blocks=blocks, platforms=CustomGroup(plat1),
                     cannons=CustomGroup(cannon6, cannon7, cannon8), fps=fps),
 
-              Level(30, [], blocks=blocks, platforms=CustomGroup(),
+              Level(15, [], blocks=blocks, platforms=CustomGroup(),
                     cannons=CustomGroup(cannon9), fps=fps), ]
 
     level_num = 0
     level = levels[level_num]
 
     # controles
-    joysticks = [pygame.joystick.Joystick(x) for x in range(pygame.joystick.get_count())]
-    a_pressed = []
-    for joystick in joysticks:
+    joysticks = []
+    for i in range(pygame.joystick.get_count()):
+        joystick = pygame.joystick.Joystick(i)
         joystick.init()
-        a_pressed.append(0)
+
         print(joystick.get_name())
 
-    joystick_threshold = 0.4
+        if joystick.get_name().lower().rfind("xbox") != -1:
+            joysticks.append(XBoxJoystick(i))
 
     play_background()
     jump_sound.set_volume(1)
@@ -154,17 +156,15 @@ def main():
         # joysticks
         for i in range(len(joysticks)):
             if i < len(chars_static):
-                if joysticks[i].get_axis(0) > joystick_threshold:
-                    chars_static[i].move(5, 0)
-                if joysticks[i].get_axis(0) < -joystick_threshold:
-                    chars_static[i].move(-5, 0)
+                if joysticks[i].right():
+                    chars_static[i].move_right()
+                if joysticks[i].left():
+                    chars_static[i].move_left()
 
-                if joysticks[i].get_button(0):
-                    if not a_pressed[i]:
-                        chars_static[i].jump()
-                    a_pressed[i] = 1
-                else:
-                    a_pressed[i] = 0
+                if joysticks[i].down():
+                    chars_static[i].fall()
+                if joysticks[i].a_press():
+                    chars_static[i].jump()
 
         # teclas apretadas
         pressed = pygame.key.get_pressed()
@@ -247,7 +247,7 @@ def main():
 
         for i in range(len(joysticks)):
             if i < len(chars_static):
-                if joysticks[i].get_button(0):
+                if joysticks[i].a_press():
                     main()
                     return
 
