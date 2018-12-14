@@ -25,8 +25,8 @@ def main():
     pygame.display.set_icon(pygame.image.load(path('static/img/favicon.png')))
 
     # personajes
-    player1 = GravityChar(0, 600, 200, img=path('static/img/Pina.png'))
-    player2 = GravityChar(1, 100, 350, img=path('static/img/Anouk.png'))
+    player1 = GravityChar(0, 600, 200, img=path('static/img/Checho.png'))
+    player2 = GravityChar(1, 100, 350, img=path('static/img/Pina.png'))
     player3 = GravityChar(2, 300, 200, img=path('static/img/Peiblv3.png'))
     player4 = GravityChar(3, 500, 100, img=path('static/img/Tito.png'))
 
@@ -75,33 +75,38 @@ def main():
 
     cannon4 = Cannon(screen_width - border_width - 50,
                      height_part * 2 + border_width - 50, bullet_vx=-6)
-    cannon5 = Cannon(border_width, border_width,
-                     bullet_vx=6, bullet_vy=4)
+    cannon5 = Cannon(border_width, height_part * 3 + border_width - 50,
+                     bullet_vx=8, frecuencia=40)
 
     cannon6 = Cannon(screen_width - border_width - 50,
-                     height_part * 2 + border_width - 50, bullet_vx=-6)
+                     height_part * 2 + border_width - 100, bullet_vx=-6)
     cannon7 = Cannon(border_width, border_width,
                      bullet_vx=6, bullet_vy=4)
-    cannon8 = Cannon(screen_width - border_width - 50,
-                     screen_height - border_width - 50,
-                     bullet_vx=-6, bullet_vy=-2)
+    cannon8 = Cannon(border_width, height_part * 3 + border_width - 50,
+                     bullet_vx=8, frecuencia=40)
+
+    cannon9 = Cannon(border_width + 15, screen_height - border_width - 65,
+                     bullet_vx=4, bullet_radius=30, bullet_damage=50)
 
     # niveles
-    levels = [Level(30, [Objective((50, 100)), Objective((700, 100)), Objective((200, 500))],
-                    blocks=blocks, platforms=CustomGroup(plat1, plat2, plat3, plat4, plat5),
+    levels = [Level(30, [Objective((50, 100)), Objective((700, 100)), Objective((200, 500))], blocks=blocks,
+                    platforms=CustomGroup(plat1, plat2, plat3, plat4, plat5),
                     cannons=CustomGroup(cannon1), fps=fps),
 
-              Level(30, [Objective((50, 50))], blocks=blocks, cannons=CustomGroup(cannon2, cannon3),
-                    platforms=CustomGroup(plat2, plat3), fps=fps),
+              Level(30, [Objective((50, 50))], blocks=blocks,
+                    platforms=CustomGroup(plat2, plat3),
+                    cannons=CustomGroup(cannon2, cannon3), fps=fps),
 
-              Level(15, [Objective((350, 300))], blocks=blocks, cannons=CustomGroup(cannon4, cannon5),
-                    platforms=CustomGroup(), fps=fps),
+              Level(30, [Objective((350, 150))], blocks=blocks, platforms=CustomGroup(),
+                    cannons=CustomGroup(cannon4, cannon5), fps=fps),
 
-              Level(30, [Objective((150, 100)), Objective((600, 100))], blocks=blocks,
-                    cannons=CustomGroup(cannon6, cannon7, cannon8),
-                    platforms=CustomGroup(plat1), fps=fps), ]
+              Level(30, [Objective((150, 100)), Objective((600, 100))], blocks=blocks, platforms=CustomGroup(plat1),
+                    cannons=CustomGroup(cannon6, cannon7, cannon8), fps=fps),
 
-    level_num = 0
+              Level(30, [], blocks=blocks, platforms=CustomGroup(),
+                    cannons=CustomGroup(cannon9), fps=fps), ]
+
+    level_num = 4
     level = levels[level_num]
 
     # controles
@@ -128,12 +133,23 @@ def main():
             elif event.type == pygame.KEYDOWN:
                 if event.key == pygame.K_UP:
                     player1.jump()
+                if event.key == pygame.K_DOWN:
+                    player1.fall()
+
                 if event.key == pygame.K_w:
                     player2.jump()
+                if event.key == pygame.K_s:
+                    player1.fall()
+
                 if event.key == pygame.K_i:
                     player3.jump()
+                if event.key == pygame.K_k:
+                    player1.fall()
+
                 if event.key == pygame.K_t:
                     player4.jump()
+                if event.key == pygame.K_g:
+                    player1.fall()
 
         # joysticks
         for i in range(len(joysticks)):
@@ -204,7 +220,7 @@ def main():
 
     # pantalla final
     texto = "Game Over"
-    color_texto = (255, 0, 0)
+    color_texto = (230, 0, 0)
     if len(chars) > 0:
         texto = "Congratules!"
         color_texto = (0, 230, 0)

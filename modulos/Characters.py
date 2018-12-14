@@ -179,6 +179,7 @@ class GravityChar(Char):
         self.jumptries = 0
         self.maxjumptries = 8
         self.standing = False
+        self.falling = False
 
     def update(self):
         if self.standing and self.jumptries > 0:
@@ -190,9 +191,19 @@ class GravityChar(Char):
         self.vy += self.g
         self.rect.y += self.vy
         self.standing = False
+        return
+
+    def draw(self, screen):
+        Char.draw(self, screen)
+        self.falling = False
+        return
 
     def jump(self):
         self.jumptries = self.maxjumptries
+        return
+
+    def fall(self):
+        self.falling = True
         return
 
     def collide(self, sprite):

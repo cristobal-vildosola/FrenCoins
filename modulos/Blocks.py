@@ -66,3 +66,8 @@ class Platform(Block):
     # choque con el lado inferior, no hace nada
     def collide_bottom(self, moving_sprite):
         return False
+
+    def collide_top(self, moving_sprite):
+        if moving_sprite.falling:
+            return False
+        return Block.collide_top(self, moving_sprite)
