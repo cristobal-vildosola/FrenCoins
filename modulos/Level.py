@@ -77,6 +77,9 @@ class Level:
         if self.time <= 0:
             return True
 
+        if len(self.objectives) == 0:
+            return False
+
         for char in characters:
             if len(char.objectives) < len(self.objectives):
                 return False

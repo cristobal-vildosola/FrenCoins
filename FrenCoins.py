@@ -86,7 +86,7 @@ def main():
                      bullet_vx=8, frecuencia=40)
 
     cannon9 = Cannon(border_width + 15, screen_height - border_width - 65,
-                     bullet_vx=4, bullet_radius=30, bullet_damage=50)
+                     bullet_vx=4, bullet_radius=30, bullet_damage=30)
 
     # niveles
     levels = [Level(30, [Objective((50, 100)), Objective((700, 100)), Objective((200, 500))], blocks=blocks,
@@ -106,7 +106,7 @@ def main():
               Level(30, [], blocks=blocks, platforms=CustomGroup(),
                     cannons=CustomGroup(cannon9), fps=fps), ]
 
-    level_num = 4
+    level_num = 0
     level = levels[level_num]
 
     # controles
