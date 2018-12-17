@@ -1,6 +1,7 @@
 import os
 
 import pygame
+from pygame.locals import *
 
 from modulos.Blocks import Block, Platform
 from modulos.Characters import GravityChar, CustomGroup
@@ -111,15 +112,13 @@ def main():
     level = levels[level_num]
 
     # controles
-    joysticks = []
-    for i in range(pygame.joystick.get_count()):
-        joystick = pygame.joystick.Joystick(i)
+    joysticks = [pygame.joystick.Joystick(i) for i in range(pygame.joystick.get_count())]
+    for joystick in joysticks:
         joystick.init()
 
         print(joystick.get_name())
-
         if joystick.get_name().lower().rfind("xbox") != -1:
-            joysticks.append(XBoxJoystick(i))
+            joysticks.append(XBoxJoystick(joystick))
 
     play_background()
     jump_sound.set_volume(1)
@@ -128,30 +127,19 @@ def main():
 
         # eventos
         for event in pygame.event.get():
-            if event.type == pygame.QUIT:
+            if event.type == QUIT:
                 pygame.quit()
                 return
 
-            elif event.type == pygame.KEYDOWN:
-                if event.key == pygame.K_UP:
+            elif event.type == KEYDOWN:
+                if event.key == K_UP:
                     player1.jump()
-                if event.key == pygame.K_DOWN:
-                    player1.fall()
-
-                if event.key == pygame.K_w:
+                if event.key == K_w:
                     player2.jump()
-                if event.key == pygame.K_s:
-                    player1.fall()
-
-                if event.key == pygame.K_i:
+                if event.key == K_i:
                     player3.jump()
-                if event.key == pygame.K_k:
-                    player1.fall()
-
-                if event.key == pygame.K_t:
+                if event.key == K_t:
                     player4.jump()
-                if event.key == pygame.K_g:
-                    player1.fall()
 
         # joysticks
         for i in range(len(joysticks)):
@@ -160,7 +148,6 @@ def main():
                     chars_static[i].move_right()
                 if joysticks[i].left():
                     chars_static[i].move_left()
-
                 if joysticks[i].down():
                     chars_static[i].fall()
                 if joysticks[i].a_press():
@@ -168,25 +155,33 @@ def main():
 
         # teclas apretadas
         pressed = pygame.key.get_pressed()
-        if pressed[pygame.K_LEFT]:
+        if pressed[K_LEFT]:
             player1.move_left()
-        if pressed[pygame.K_RIGHT]:
+        if pressed[K_RIGHT]:
             player1.move_right()
+        if pressed[K_DOWN]:
+            player1.fall()
 
-        if pressed[pygame.K_a]:
+        if pressed[K_a]:
             player2.move_left()
-        if pressed[pygame.K_d]:
+        if pressed[K_d]:
             player2.move_right()
+        if pressed[K_s]:
+            player2.fall()
 
-        if pressed[pygame.K_j]:
+        if pressed[K_j]:
             player3.move_left()
-        if pressed[pygame.K_l]:
+        if pressed[K_l]:
             player3.move_right()
+        if pressed[K_k]:
+            player3.fall()
 
-        if pressed[pygame.K_f]:
+        if pressed[K_f]:
             player4.move_left()
-        if pressed[pygame.K_h]:
+        if pressed[K_h]:
             player4.move_right()
+        if pressed[K_g]:
+            player4.fall()
 
         # mov automático
         chars.update()
@@ -236,12 +231,12 @@ def main():
     while running:
         # eventos
         for event in pygame.event.get():
-            if event.type == pygame.QUIT:
+            if event.type == QUIT:
                 pygame.quit()
                 return
 
-            if event.type == pygame.KEYDOWN:
-                if event.key == pygame.K_SPACE:
+            if event.type == KEYDOWN:
+                if event.key == K_SPACE:
                     main()
                     return
 
@@ -259,8 +254,10 @@ def main():
 
         # dibujar
         screen.fill((25, 115, 200))
+
         blocks.draw(screen)
         chars.draw(screen)
+
         titulo.draw(screen)
         subtitulo.draw(screen)
 
