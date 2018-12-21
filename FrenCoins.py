@@ -112,8 +112,9 @@ def main():
     level = levels[level_num]
 
     # controles
-    joysticks = [pygame.joystick.Joystick(i) for i in range(pygame.joystick.get_count())]
-    for joystick in joysticks:
+    joysticks = []
+    for i in range(pygame.joystick.get_count()):
+        joystick = pygame.joystick.Joystick(i)
         joystick.init()
 
         print(joystick.get_name())
@@ -222,7 +223,7 @@ def main():
 
     titulo = Text(texto, screen_width / 2, screen_height / 2,
                   height=100, color=color_texto, center=True)
-    subtitulo = Text("Presiona espacio o A para empezar de nuevo", screen_width / 2, screen_height / 2 + 100,
+    subtitulo = Text("Presiona espacio o START para empezar de nuevo", screen_width / 2, screen_height / 2 + 100,
                      height=30, color=(255, 255, 255), center=True)
 
     jump_sound.set_volume(0)
@@ -242,7 +243,7 @@ def main():
 
         for i in range(len(joysticks)):
             if i < len(chars_static):
-                if joysticks[i].a_press():
+                if joysticks[i].start_press():
                     main()
                     return
 
