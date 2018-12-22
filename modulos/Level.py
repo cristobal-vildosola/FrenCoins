@@ -6,12 +6,14 @@ from modulos.utils import path
 
 class Level:
 
-    def __init__(self, duration, objectives, cannons, blocks, platforms, fps=60):
+    def __init__(self, duration=30,
+                 coins=CustomGroup(), cannons=CustomGroup(), blocks=CustomGroup(), platforms=CustomGroup(), fps=60):
+
         self.time = duration
         self.prep_time = 3
         self.fps = fps
 
-        self.objectives = objectives
+        self.coins = coins
 
         self.blocks = blocks
         self.platforms = platforms
@@ -45,7 +47,7 @@ class Level:
 
         # no se pueden agarrar objetivos durante la preparación
         if self.prep_time <= 0:
-            chars.detect_objectives(self.objectives)
+            chars.detect_objectives(self.coins)
 
         return
 
@@ -63,7 +65,7 @@ class Level:
 
         # no se pueden agarrar objetivos durante la preparación
         if self.prep_time <= 0:
-            for objective in self.objectives:
+            for objective in self.coins:
                 objective.draw(screen)
         else:
             # mostrar tiempo de preparación
@@ -77,11 +79,11 @@ class Level:
         if self.time <= 0:
             return True
 
-        if len(self.objectives) == 0:
+        if len(self.coins) == 0:
             return False
 
         for char in characters:
-            if len(char.objectives) < len(self.objectives):
+            if len(char.objectives) < len(self.coins):
                 return False
 
         return True
@@ -89,21 +91,21 @@ class Level:
     def end(self, characters):
         for char in characters:
 
-            if len(char.objectives) < len(self.objectives):
+            if len(char.objectives) < len(self.coins):
                 char.kill()
             else:
                 char.clear_objectives()
         return
 
 
-class Objective(pygame.sprite.Sprite):
+class Coin(pygame.sprite.Sprite):
 
-    def __init__(self, pos):
+    def __init__(self, x, y):
         pygame.sprite.Sprite.__init__(self)
         self.image = pygame.image.load(path('static/img/FrenCoin.png'))
         self.image = pygame.transform.smoothscale(self.image, (50, 50))
 
-        self.rect = self.image.get_rect().move(pos)
+        self.rect = self.image.get_rect().move((x, y))
 
     def draw(self, screen):
         screen.blit(self.image, self.rect)

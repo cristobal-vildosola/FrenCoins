@@ -3,13 +3,11 @@ import os
 import pygame
 from pygame.locals import *
 
-from modulos.Blocks import Block, Platform
+from LevelLoader import load_level
 from modulos.Characters import GravityChar, CustomGroup
 from modulos.Joystick import XBoxJoystick
-from modulos.Level import Level, Objective
 from modulos.Sounds import play_background, jump_sound
 from modulos.Text import Text
-from modulos.Weapons import Cannon
 from modulos.utils import path
 
 # centrar ventana
@@ -27,86 +25,22 @@ def main():
     pygame.display.set_icon(pygame.image.load(path('static/img/favicon.png')))
 
     # personajes
-    player1 = GravityChar(0, 600, 200, img=path('static/img/FatCow2.png'))
-    player2 = GravityChar(1, 100, 350, img=path('static/img/Pina.png'))
-    player3 = GravityChar(2, 300, 200, img=path('static/img/Peiblv3.png'))
-    player4 = GravityChar(3, 500, 100, img=path('static/img/Tito.png'))
+    player1 = GravityChar(0, 600, 200, img=path('static/img/Ardila.png'))
+    player2 = GravityChar(1, 100, 350, img=path('static/img/Checho.png'))
+    player3 = GravityChar(3, 500, 100, img=path('static/img/Tito.png'))
+    player4 = GravityChar(2, 300, 200, img=path('static/img/FatCow.png'))
 
-    chars = CustomGroup([player1, player2])
+    chars = CustomGroup([player1, player2, player3])
     chars_static = [player1, player2, player3, player4]  # lista para asociar con joysticks
 
-    # bloques
-    blocks = CustomGroup()
-    border_width = 30
-    border_color = (60, 30, 0)
-
-    blocks.add(Block(border_width, screen_height, 0, 0, color=border_color))
-    blocks.add(Block(screen_width, border_width, 0, 0, color=border_color))
-    blocks.add(Block(border_width, screen_height, screen_width - border_width, 0, color=border_color))
-    blocks.add(Block(screen_width, border_width, 0, screen_height - border_width, color=border_color))
-
-    # plataformas
-    platform_height = 5
-    platform_width = 200
-    platform_color = (100, 10, 100)
-    height_part = (screen_height - 2 * border_width) / 4
-    width_part = (screen_width - 2 * border_width) / 4
-
-    plat1 = Platform(platform_width, platform_height,
-                     width_part * 2 + border_width - platform_width / 2, height_part * 2 + border_width,
-                     color=platform_color)
-    plat2 = Platform(platform_width, platform_height,
-                     width_part + border_width - platform_width / 2, height_part * 3 + border_width,
-                     color=platform_color)
-    plat3 = Platform(platform_width, platform_height,
-                     width_part * 3 + border_width - platform_width / 2, height_part * 3 + border_width,
-                     color=platform_color)
-    plat4 = Platform(platform_width, platform_height,
-                     width_part + border_width - platform_width / 2, height_part + border_width,
-                     color=platform_color)
-    plat5 = Platform(platform_width, platform_height,
-                     width_part * 3 + border_width - platform_width / 2, height_part + border_width,
-                     color=platform_color)
-
-    # cañones
-    cannon1 = Cannon(border_width, screen_height - border_width - 50, bullet_vx=6)
-
-    cannon2 = Cannon(border_width, screen_height - border_width - 50, bullet_vx=6)
-    cannon3 = Cannon(screen_width - border_width - 50,
-                     height_part * 2 + border_width - 50, bullet_vx=-6)
-
-    cannon4 = Cannon(screen_width - border_width - 50,
-                     height_part * 2 + border_width - 50, bullet_vx=-6)
-    cannon5 = Cannon(border_width, height_part * 3 + border_width - 50,
-                     bullet_vx=8, frecuencia=40)
-
-    cannon6 = Cannon(screen_width - border_width - 50,
-                     height_part * 2 + border_width - 100, bullet_vx=-6)
-    cannon7 = Cannon(border_width, border_width,
-                     bullet_vx=6, bullet_vy=4)
-    cannon8 = Cannon(border_width, height_part * 3 + border_width - 50,
-                     bullet_vx=8, frecuencia=90)
-
-    cannon9 = Cannon(border_width + 15, screen_height - border_width - 65,
-                     bullet_vx=4, bullet_radius=30, bullet_damage=30)
-
     # niveles
-    levels = [Level(30, [Objective((50, 100)), Objective((700, 100)), Objective((200, 500))], blocks=blocks,
-                    platforms=CustomGroup(plat1, plat2, plat3, plat4, plat5),
-                    cannons=CustomGroup(cannon1), fps=fps),
-
-              Level(30, [Objective((50, 50))], blocks=blocks,
-                    platforms=CustomGroup(plat2, plat3),
-                    cannons=CustomGroup(cannon2, cannon3), fps=fps),
-
-              Level(30, [Objective((350, 180))], blocks=blocks, platforms=CustomGroup(),
-                    cannons=CustomGroup(cannon4, cannon5), fps=fps),
-
-              Level(30, [Objective((150, 100)), Objective((600, 100))], blocks=blocks, platforms=CustomGroup(plat1),
-                    cannons=CustomGroup(cannon6, cannon7, cannon8), fps=fps),
-
-              Level(15, [], blocks=blocks, platforms=CustomGroup(),
-                    cannons=CustomGroup(cannon9), fps=fps), ]
+    levels = [
+        load_level(path('static/maps/level1.json')),
+        load_level(path('static/maps/level2.json')),
+        load_level(path('static/maps/level3.json')),
+        load_level(path('static/maps/level4.json')),
+        load_level(path('static/maps/level5.json')),
+    ]
 
     level_num = 0
     level = levels[level_num]
@@ -224,7 +158,7 @@ def main():
     titulo = Text(texto, screen_width / 2, screen_height / 2,
                   height=100, color=color_texto, center=True)
     subtitulo = Text("Presiona espacio o START para empezar de nuevo", screen_width / 2, screen_height / 2 + 100,
-                     height=30, color=(255, 255, 255), center=True)
+                     height=27, color=(255, 255, 255), center=True)
 
     jump_sound.set_volume(0)
 
@@ -248,7 +182,7 @@ def main():
                     return
 
         chars.update()
-        chars.detect_collisions(blocks)
+        chars.detect_collisions(levels[0].blocks)
 
         for char in chars:
             char.jump()
@@ -256,7 +190,7 @@ def main():
         # dibujar
         screen.fill((25, 115, 200))
 
-        blocks.draw(screen)
+        levels[0].blocks.draw(screen)
         chars.draw(screen)
 
         titulo.draw(screen)

@@ -1,0 +1,31 @@
+{
+  "duration": 30,
+
+  "blocks": [
+    {
+      "width": 30, "height": 600, "x": 0, "y": 0, "color": [60, 30, 0]
+    }, {
+      "width": 800, "height": 30, "x": 0, "y": 0, "color": [60, 30, 0]
+    }, {
+      "width": 30, "height": 600, "x": 770, "y": 0, "color": [60, 30, 0]
+    }, {
+      "width": 800, "height": 30, "x": 0, "y": 570, "color": [60, 30, 0]
+    }
+  ],
+
+  "platforms": [],
+
+  "cannons": [
+    {
+      "x": 30, "y": 385, "bullet_vx": 8, "frecuencia": 40
+    }, {
+      "x": 720, "y": 250, "bullet_vx": -6
+    }
+  ],
+
+  "coins": [
+    {
+      "x": 375, "y": 180
+    }
+  ]
+}

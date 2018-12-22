@@ -1,0 +1,39 @@
+{
+  "duration": 30,
+
+  "blocks": [
+    {
+      "width": 30, "height": 600, "x": 0, "y": 0, "color": [60, 30, 0]
+    }, {
+      "width": 800, "height": 30, "x": 0, "y": 0, "color": [60, 30, 0]
+    }, {
+      "width": 30, "height": 600, "x": 770, "y": 0, "color": [60, 30, 0]
+    }, {
+      "width": 800, "height": 30, "x": 0, "y": 570, "color": [60, 30, 0]
+    }
+  ],
+
+  "platforms": [
+    {
+      "width": 200, "height": 5, "x": 300, "y": 300, "color": [100, 10, 100]
+    }
+  ],
+
+  "cannons": [
+    {
+      "x": 30, "y": 385, "bullet_vx": 8, "frecuencia": 90
+    }, {
+      "x": 720, "y": 250, "bullet_vx": -6
+    }, {
+      "x": 30, "y": 30, "bullet_vx": 6, "bullet_vy": 4
+    }
+  ],
+
+  "coins": [
+    {
+      "x": 150, "y": 100
+    }, {
+      "x": 600, "y": 100
+    }
+  ]
+}
