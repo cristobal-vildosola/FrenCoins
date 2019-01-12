@@ -46,9 +46,9 @@ class Menu:
         return
 
     def draw(self, screen):
-        total_height = 0
+        total_height = - self.padding
         for item in self.menu_items:
-            total_height += item.get_height()
+            total_height += item.get_height() + self.padding
 
         y = self.screen_height / 2 - total_height / 2
 
@@ -146,9 +146,11 @@ class MenuText(MenuItem):
 class PauseMenu(Menu):
     def __init__(self, driver):
         items = [
-            MenuText("Pause", height=100, color=(217, 217, 14)),
-            Button(handler=None, text="Continue"),
+            MenuText("Pause", height=100, color=(217, 217, 217)),
+            Button(handler=ContinueGame(driver), text="Continue"),
+            Button(handler=StartGame(driver), text="Restart"),
             Button(handler=MainMenuHandler(driver), text="Main Menu"),
+            Button(handler=QuitGame(driver), text="Exit", color=(170, 0, 0), hover_color=(220, 0, 0)),
         ]
         super().__init__(driver, items)
 
@@ -158,6 +160,6 @@ class MainMenu(Menu):
         items = [
             MenuText(text="FrenCoins", height=100, color=(14, 117, 14)),
             Button(handler=StartGame(driver), text="Start!"),
-            Button(handler=QuitGame(driver), text="Exit", color=(170, 0, 0), hover_color=(220, 0, 0))
+            Button(handler=QuitGame(driver), text="Exit", color=(170, 0, 0), hover_color=(220, 0, 0)),
         ]
         super().__init__(driver, items)

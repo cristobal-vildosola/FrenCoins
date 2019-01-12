@@ -12,6 +12,12 @@ class StartGame(Handler):
         return
 
 
+class ContinueGame(Handler):
+    def handle(self):
+        self.driver.state.unpause()
+        return
+
+
 class MainMenuHandler(Handler):
     def handle(self):
         self.driver.main_menu()

@@ -1,12 +1,15 @@
 class Joystick:
-    def __init__(self, joystick, a_button=0, start_button=7,
+    def __init__(self, joystick, main_button=0, start_button=7,
                  x_axis=0, y_axis=1, x_orientation=1, y_orientation=1, treshold=0.6):
         self.joystick = joystick
 
         self.start_button = start_button
+        self.main_button = main_button
 
-        self.a_button = a_button
-        self.a_pressed = 0
+        self.start_pressed = 0
+        self.main_pressed = 0
+        self.prev_x_value = 0
+        self.prev_y_value = 0
 
         self.treshold = treshold
         self.x_axis = x_axis
@@ -14,63 +17,96 @@ class Joystick:
         self.y_axis = y_axis
         self.y_orientation = y_orientation
 
-    def right(self):
-        return self.x_orientation * self.joystick.get_axis(self.x_axis) > self.treshold
+    def update(self):
+        self.main_pressed = self.hold_main()
+        self.start_pressed = self.hold_start()
+        self.prev_x_value = self.joystick.get_axis(self.x_axis)
+        self.prev_y_value = self.joystick.get_axis(self.y_axis)
+        return
 
-    def left(self):
-        return -self.x_orientation * self.joystick.get_axis(self.x_axis) > self.treshold
-
-    def up(self):
+    def hold_up(self):
         return self.y_orientation * self.joystick.get_axis(self.y_axis) > self.treshold
 
-    def down(self):
+    def hold_down(self):
         return -self.y_orientation * self.joystick.get_axis(self.y_axis) > self.treshold
 
-    def start_press(self):
+    def hold_left(self):
+        return -self.x_orientation * self.joystick.get_axis(self.x_axis) > self.treshold
+
+    def hold_right(self):
+        return self.x_orientation * self.joystick.get_axis(self.x_axis) > self.treshold
+
+    def press_up(self):
+        return not self.y_orientation * self.prev_y_value > self.treshold and self.hold_up()
+
+    def press_down(self):
+        return not -self.y_orientation * self.prev_y_value > self.treshold and self.hold_down()
+
+    def press_left(self):
+        return not -self.x_orientation * self.prev_x_value > self.treshold and self.hold_left()
+
+    def press_right(self):
+        return not self.x_orientation * self.prev_x_value > self.treshold and self.hold_right()
+
+    def hold_main(self):
+        return self.joystick.get_button(self.main_button)
+
+    def hold_start(self):
         return self.joystick.get_button(self.start_button)
 
-    def a_press(self):
-        if self.joystick.get_button(self.a_button):
+    def press_main(self):
+        return not self.main_pressed and self.hold_main()
 
-            if not self.a_pressed:
-                self.a_pressed = 1
-                return True
-
-            self.a_pressed = 1
-        else:
-            self.a_pressed = 0
-
-        return False
+    def press_start(self):
+        return not self.start_pressed and self.hold_start()
 
 
 class XBoxJoystick(Joystick):
-    def __init__(self, joy_id):
-        Joystick.__init__(self, joy_id, a_button=0, start_button=7,
+    def __init__(self, joystick):
+        Joystick.__init__(self, joystick, main_button=0, start_button=7,
                           x_axis=0, y_axis=1, x_orientation=1, y_orientation=-1)
 
 
-class NullJoystick:
+class NullJoystick(Joystick):
 
-    @staticmethod
-    def right():
+    def __init__(self):
+        super().__init__(None)
+
+    def update(self):
+        return
+
+    def hold_up(self):
         return False
 
-    @staticmethod
-    def left():
+    def hold_down(self):
         return False
 
-    @staticmethod
-    def up():
+    def hold_left(self):
         return False
 
-    @staticmethod
-    def down():
+    def hold_right(self):
         return False
 
-    @staticmethod
-    def start_press():
+    def press_up(self):
         return False
 
-    @staticmethod
-    def a_press():
+    def press_down(self):
+        return False
+
+    def press_left(self):
+        return False
+
+    def press_right(self):
+        return False
+
+    def hold_main(self):
+        return False
+
+    def hold_start(self):
+        return False
+
+    def press_main(self):
+        return False
+
+    def press_start(self):
         return False

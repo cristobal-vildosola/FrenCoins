@@ -9,13 +9,14 @@ char_size = 40
 
 
 class Player:
-    def __init__(self, player_id: int, img: str = "Pina.png", driver=None, joystick=NullJoystick(),
+    def __init__(self, player_id: int, img: str = "Pina", driver=None, joystick: Joystick = NullJoystick(),
                  k_up=K_UP, k_down=K_DOWN, k_left=K_LEFT, k_right=K_RIGHT):
         self.driver = driver
         self.id = player_id
 
         self.img = img
-        self.char: Character = Character(player_id, path(f'static/img/{self.img}'))
+        self.char: Character = Character(player_id, path(f'static/img/{self.img}.png'),
+                                         x=200 + 100 * self.id, y=200)
 
         self.joystick: Joystick = joystick
 
@@ -32,37 +33,61 @@ class Player:
         for event in events:
             if event.type == KEYDOWN:
                 if event.key == self.k_up:
-                    self.driver.action_up(self)
+                    self.driver.press_up(self)
+                if event.key == self.k_down:
+                    self.driver.press_down(self)
+                if event.key == self.k_left:
+                    self.driver.press_left(self)
+                if event.key == self.k_right:
+                    self.driver.press_right(self)
 
-                if event.key == K_RETURN:
-                    self.driver.action_main(self)
-                if event.key == K_ESCAPE:
-                    self.driver.action_start(self)
+                if self.id == 0:
+                    if event.key == K_RETURN:
+                        self.driver.press_main(self)
+                    if event.key == K_ESCAPE:
+                        self.driver.press_start(self)
 
         # teclas apretadas
-        if pressed[self.k_left]:
-            self.driver.action_left(self)
-        if pressed[self.k_right]:
-            self.driver.action_right(self)
+        if pressed[self.k_up]:
+            self.driver.hold_up(self)
         if pressed[self.k_down]:
-            self.driver.action_down(self)
+            self.driver.hold_down(self)
+        if pressed[self.k_left]:
+            self.driver.hold_left(self)
+        if pressed[self.k_right]:
+            self.driver.hold_right(self)
 
         # joystick
-        if self.joystick.left():
-            self.driver.action_left(self)
-        if self.joystick.right():
-            self.driver.action_right(self)
-        if self.joystick.up():
-            self.driver.action_up(self)
-        if self.joystick.down():
-            self.driver.action_down(self)
-        if self.joystick.a_press():
-            self.driver.action_main(self)
+        if self.joystick.hold_up():
+            self.driver.hold_up(self)
+        if self.joystick.hold_down():
+            self.driver.hold_down(self)
+        if self.joystick.hold_left():
+            self.driver.hold_left(self)
+        if self.joystick.hold_right():
+            self.driver.hold_right(self)
 
+        if self.joystick.press_up():
+            self.driver.press_up(self)
+        if self.joystick.press_down():
+            self.driver.press_down(self)
+        if self.joystick.press_left():
+            self.driver.press_left(self)
+        if self.joystick.press_right():
+            self.driver.press_right(self)
+
+        if self.joystick.press_main():
+            self.driver.press_main(self)
+        if self.joystick.press_start():
+            self.driver.press_start(self)
+
+        # actualizar valores anteriores del joystick
+        self.joystick.update()
         return
 
     def restart_char(self):
-        self.char: Character = Character(self.id, path(f'static/img/{self.img}'))
+        self.char = Character(self.id, path(f'static/img/{self.img}.png'),
+                              x=200 + 100 * self.id, y=200)
         return
 
 
@@ -70,8 +95,7 @@ class Character(pygame.sprite.Sprite):
     LEFT = 0
     RIGHT = 1
 
-    def __init__(self, player_id, img, x=0, y=0, width=char_size, height=char_size, max_life=100, g=1, jumpspeed=18,
-                 k_up=K_UP, k_down=K_DOWN, k_left=K_LEFT, k_right=K_RIGHT, joystick=NullJoystick()):
+    def __init__(self, player_id, img, x=0, y=0, width=char_size, height=char_size, max_life=100, g=1, jumpspeed=18):
         pygame.sprite.Sprite.__init__(self)
         self.id = player_id
 
@@ -85,13 +109,6 @@ class Character(pygame.sprite.Sprite):
         self.height = height
         self.rect = self.image.get_rect().move(x, y)
         self.old_rect = self.rect.copy()
-
-        # acciones
-        self.k_up = k_up
-        self.k_down = k_down
-        self.k_left = k_left
-        self.k_right = k_right
-        self.joystick = joystick
 
         # vida
         self.max_life = max_life
@@ -150,35 +167,6 @@ class Character(pygame.sprite.Sprite):
         self.vy += self.g
         self.rect.y += self.vy
         self.standing = False
-        return
-
-    # ---------------- acciones ---------------
-
-    def actions(self, events, pressed):
-        # eventos
-        for event in events:
-            if event.type == KEYDOWN:
-                if event.key == self.k_up:
-                    self.jump()
-
-        # teclas apretadas
-        if pressed[self.k_left]:
-            self.move_left()
-        if pressed[self.k_right]:
-            self.move_right()
-        if pressed[self.k_down]:
-            self.fall()
-
-        # joystick
-        if self.joystick.right():
-            self.move_right()
-        if self.joystick.left():
-            self.move_left()
-        if self.joystick.down():
-            self.fall()
-        if self.joystick.a_press():
-            self.jump()
-
         return
 
     # ---------------- dibujar ---------------

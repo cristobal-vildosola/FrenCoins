@@ -3,7 +3,7 @@ import json
 import pygame
 
 from modulos.Blocks import Block, Platform
-from modulos.Characters import CustomGroup
+from modulos.Players import CustomGroup
 from modulos.Text import Text
 from modulos.Weapons import Cannon
 from modulos.utils import path
