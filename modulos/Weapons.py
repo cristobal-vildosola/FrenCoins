@@ -27,9 +27,11 @@ class Bullet(pygame.sprite.Sprite):
 
     def draw(self, screen):
         pygame.draw.circle(screen, self.color, self.rect.center, self.radius)
+        return
 
     def update(self, *args):
         self.rect.move_ip(self.vx, self.vy)
+        return
 
     def impact(self, sprite):
         sprite.life -= self.damage

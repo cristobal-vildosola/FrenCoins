@@ -3,35 +3,18 @@ import os
 import pygame
 from pygame.locals import *
 
-from LevelLoader import load_level
-from modulos.Characters import GravityChar, CustomGroup
+from modulos.LevelLoader import load_level
+from modulos.Characters import Character, CustomGroup
 from modulos.Joystick import XBoxJoystick
 from modulos.Sounds import play_background, jump_sound
 from modulos.Text import Text
 from modulos.utils import path
-
-# centrar ventana
-os.environ['SDL_VIDEO_CENTERED'] = '1'
+from modulos.Menu import Menu, Button, MenuText
 
 
-def main():
-    pygame.init()
-    clock = pygame.time.Clock()
-    fps = 60
-
+def play(screen, players, clock, fps):
+    chars = CustomGroup(players)
     screen_width, screen_height = 800, 600
-    screen = pygame.display.set_mode((screen_width, screen_height))
-    pygame.display.set_caption("FrenCoins")
-    pygame.display.set_icon(pygame.image.load(path('static/img/favicon.png')))
-
-    # personajes
-    player1 = GravityChar(0, 600, 200, img=path('static/img/Ardila.png'))
-    player2 = GravityChar(1, 100, 350, img=path('static/img/Checho.png'))
-    player3 = GravityChar(3, 500, 100, img=path('static/img/Tito.png'))
-    player4 = GravityChar(2, 300, 200, img=path('static/img/FatCow.png'))
-
-    chars = CustomGroup([player1, player2, player3])
-    chars_static = [player1, player2, player3, player4]  # lista para asociar con joysticks
 
     # niveles
     levels = [
@@ -45,78 +28,22 @@ def main():
     level_num = 0
     level = levels[level_num]
 
-    # controles
-    joysticks = []
-    for i in range(pygame.joystick.get_count()):
-        joystick = pygame.joystick.Joystick(i)
-        joystick.init()
-
-        print(joystick.get_name())
-        if joystick.get_name().lower().rfind("xbox") != -1:
-            joysticks.append(XBoxJoystick(joystick))
-
     play_background()
     jump_sound.set_volume(1)
     running = True
     while running:
 
         # eventos
-        for event in pygame.event.get():
+        events = pygame.event.get()
+        for event in events:
             if event.type == QUIT:
                 pygame.quit()
                 return
 
-            elif event.type == KEYDOWN:
-                if event.key == K_UP:
-                    player1.jump()
-                if event.key == K_w:
-                    player2.jump()
-                if event.key == K_i:
-                    player3.jump()
-                if event.key == K_t:
-                    player4.jump()
-
-        # joysticks
-        for i in range(len(joysticks)):
-            if i < len(chars_static):
-                if joysticks[i].right():
-                    chars_static[i].move_right()
-                if joysticks[i].left():
-                    chars_static[i].move_left()
-                if joysticks[i].down():
-                    chars_static[i].fall()
-                if joysticks[i].a_press():
-                    chars_static[i].jump()
-
-        # teclas apretadas
+        # acciones de personajes
         pressed = pygame.key.get_pressed()
-        if pressed[K_LEFT]:
-            player1.move_left()
-        if pressed[K_RIGHT]:
-            player1.move_right()
-        if pressed[K_DOWN]:
-            player1.fall()
-
-        if pressed[K_a]:
-            player2.move_left()
-        if pressed[K_d]:
-            player2.move_right()
-        if pressed[K_s]:
-            player2.fall()
-
-        if pressed[K_j]:
-            player3.move_left()
-        if pressed[K_l]:
-            player3.move_right()
-        if pressed[K_k]:
-            player3.fall()
-
-        if pressed[K_f]:
-            player4.move_left()
-        if pressed[K_h]:
-            player4.move_right()
-        if pressed[K_g]:
-            player4.fall()
+        for char in chars:
+            char.actions(events, pressed)
 
         # mov automático
         chars.update()
@@ -164,22 +91,20 @@ def main():
 
     running = True
     while running:
+
         # eventos
         for event in pygame.event.get():
             if event.type == QUIT:
-                pygame.quit()
-                return
+                running = False
 
             if event.type == KEYDOWN:
                 if event.key == K_SPACE:
-                    main()
-                    return
+                    play(screen, players, clock, fps)
+                    running = False
 
-        for i in range(len(joysticks)):
-            if i < len(chars_static):
-                if joysticks[i].start_press():
-                    main()
-                    return
+        for char in players:
+            if char.joystick.start_press():
+                play(screen, players, clock, fps)
 
         chars.update()
         chars.detect_collisions(levels[0].blocks)
@@ -199,6 +124,78 @@ def main():
         # actualizar y esperar un tick
         pygame.display.flip()
         clock.tick(fps)
+
+    return
+
+
+def main():
+    pygame.init()
+    clock = pygame.time.Clock()
+    fps = 60
+
+    # centrar ventana
+    os.environ['SDL_VIDEO_CENTERED'] = '1'
+
+    screen_width, screen_height = 800, 600
+    screen = pygame.display.set_mode((screen_width, screen_height))
+    pygame.display.set_caption("FrenCoins")
+    pygame.display.set_icon(pygame.image.load(path('static/img/favicon.png')))
+
+    # personajes
+    player1 = Character(0, x=600, y=200, img=path('static/img/Pina.png'),
+                        k_up=K_UP, k_left=K_LEFT, k_down=K_DOWN, k_right=K_RIGHT)
+    player2 = Character(1, x=500, y=100, img=path('static/img/Tito.png'),
+                        k_up=K_w, k_left=K_a, k_down=K_s, k_right=K_d)
+    player3 = Character(2, x=100, y=350, img=path('static/img/Shi.png'),
+                        k_up=K_i, k_left=K_j, k_down=K_k, k_right=K_l)
+    player4 = Character(3, x=300, y=200, img=path('static/img/FatCow.png'),
+                        k_up=K_t, k_left=K_f, k_down=K_g, k_right=K_h)
+
+    chars = [player1, player2]
+
+    # controles
+    joysticks = []
+    for i in range(pygame.joystick.get_count()):
+        joystick = pygame.joystick.Joystick(i)
+        joystick.init()
+
+        print(joystick.get_name())
+        if joystick.get_name().lower().rfind("xbox") != -1:
+            joysticks.append(XBoxJoystick(joystick))
+
+            if i < len(chars):
+                chars[i].joystick = joysticks[i]
+
+    menu = Menu([MenuText(text="FrenCoins", height=100, color=(14, 117, 14)),
+                 Button(handler=None, text="Empezar juego"),
+                 Button(handler=None, text="Salir", color=(170, 0, 0), hover_color=(220, 0, 0))])
+
+    running = True
+    while running:
+
+        # eventos
+        events = pygame.event.get()
+        for event in events:
+            if event.type == QUIT:
+                pygame.quit()
+                return
+
+            if event.type == KEYDOWN:
+                if event.key == K_UP:
+                    menu.select_next()
+                if event.key == K_DOWN:
+                    menu.select_previous()
+                if event.key == K_RETURN:
+                    running = False
+
+        screen.fill((226, 205, 86))
+        menu.draw(screen)
+
+        # actualizar y esperar un tick
+        pygame.display.flip()
+        clock.tick(fps)
+
+    play(screen, chars, clock, fps)
 
     pygame.quit()
     return

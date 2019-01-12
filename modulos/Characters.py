@@ -1,14 +1,77 @@
 import pygame
+from pygame.locals import *
+
+from modulos.Joystick import NullJoystick, Joystick
 from modulos.Sounds import play_jump, play_hit, play_coin
+from modulos.utils import path
 
 char_size = 40
 
 
-class Char(pygame.sprite.Sprite):
+class Player:
+    def __init__(self, player_id: int, img: str = "Pina.png", driver=None, joystick=NullJoystick(),
+                 k_up=K_UP, k_down=K_DOWN, k_left=K_LEFT, k_right=K_RIGHT):
+        self.driver = driver
+        self.id = player_id
+
+        self.img = img
+        self.char: Character = Character(player_id, path(f'static/img/{self.img}'))
+
+        self.joystick: Joystick = joystick
+
+        self.k_up = k_up
+        self.k_down = k_down
+        self.k_left = k_left
+        self.k_right = k_right
+
+    def set_driver(self, driver):
+        self.driver = driver
+
+    def actions(self, events, pressed):
+        # eventos
+        for event in events:
+            if event.type == KEYDOWN:
+                if event.key == self.k_up:
+                    self.driver.action_up(self)
+
+                if event.key == K_RETURN:
+                    self.driver.action_main(self)
+                if event.key == K_ESCAPE:
+                    self.driver.action_start(self)
+
+        # teclas apretadas
+        if pressed[self.k_left]:
+            self.driver.action_left(self)
+        if pressed[self.k_right]:
+            self.driver.action_right(self)
+        if pressed[self.k_down]:
+            self.driver.action_down(self)
+
+        # joystick
+        if self.joystick.left():
+            self.driver.action_left(self)
+        if self.joystick.right():
+            self.driver.action_right(self)
+        if self.joystick.up():
+            self.driver.action_up(self)
+        if self.joystick.down():
+            self.driver.action_down(self)
+        if self.joystick.a_press():
+            self.driver.action_main(self)
+
+        return
+
+    def restart_char(self):
+        self.char: Character = Character(self.id, path(f'static/img/{self.img}'))
+        return
+
+
+class Character(pygame.sprite.Sprite):
     LEFT = 0
     RIGHT = 1
 
-    def __init__(self, player_id, x, y, img, width=char_size, height=char_size, max_life=100):
+    def __init__(self, player_id, img, x=0, y=0, width=char_size, height=char_size, max_life=100, g=1, jumpspeed=18,
+                 k_up=K_UP, k_down=K_DOWN, k_left=K_LEFT, k_right=K_RIGHT, joystick=NullJoystick()):
         pygame.sprite.Sprite.__init__(self)
         self.id = player_id
 
@@ -23,6 +86,13 @@ class Char(pygame.sprite.Sprite):
         self.rect = self.image.get_rect().move(x, y)
         self.old_rect = self.rect.copy()
 
+        # acciones
+        self.k_up = k_up
+        self.k_down = k_down
+        self.k_left = k_left
+        self.k_right = k_right
+        self.joystick = joystick
+
         # vida
         self.max_life = max_life
         self.life = max_life
@@ -34,6 +104,18 @@ class Char(pygame.sprite.Sprite):
 
         # objetivos
         self.objectives = set()
+
+        # saltos y gravedad
+        self.g = g
+        self.jumpspeed = jumpspeed
+        self.vy = 0
+
+        self.jumptries = 0
+        self.maxjumptries = 4
+        self.standing = False
+        self.falling = False
+
+    # ---------------- movimiento ---------------
 
     def move(self, dx=0, dy=0):
         self.rect.move_ip(dx, dy)
@@ -48,6 +130,58 @@ class Char(pygame.sprite.Sprite):
         self.move(dx=-5)
         self.direction = self.LEFT
         return
+
+    def jump(self):
+        self.jumptries = self.maxjumptries
+        return
+
+    def fall(self):
+        self.falling = True
+        return
+
+    def update(self):
+        if self.standing and self.jumptries > 0:
+            self.vy = -self.jumpspeed
+            self.standing = False
+            self.jumptries = 0
+            play_jump(self.id)
+
+        self.jumptries -= 1
+        self.vy += self.g
+        self.rect.y += self.vy
+        self.standing = False
+        return
+
+    # ---------------- acciones ---------------
+
+    def actions(self, events, pressed):
+        # eventos
+        for event in events:
+            if event.type == KEYDOWN:
+                if event.key == self.k_up:
+                    self.jump()
+
+        # teclas apretadas
+        if pressed[self.k_left]:
+            self.move_left()
+        if pressed[self.k_right]:
+            self.move_right()
+        if pressed[self.k_down]:
+            self.fall()
+
+        # joystick
+        if self.joystick.right():
+            self.move_right()
+        if self.joystick.left():
+            self.move_left()
+        if self.joystick.down():
+            self.fall()
+        if self.joystick.a_press():
+            self.jump()
+
+        return
+
+    # ---------------- dibujar ---------------
 
     def draw(self, screen):
         image = self.image
@@ -76,7 +210,11 @@ class Char(pygame.sprite.Sprite):
 
             for i in range(len(self.objectives)):
                 screen.blit(img, self.rect.move(2, 2 + 12 * i).topright)
+
+        self.falling = False
         return
+
+    # ---------------- colisiones ---------------
 
     def detect_collisions(self, group, dokill=False):
         collisions = pygame.sprite.spritecollide(self, group, dokill=dokill)
@@ -96,10 +234,13 @@ class Char(pygame.sprite.Sprite):
             sprite.collide_right(self)
 
         if dy > 0:  # choque hacia abajo
-            sprite.collide_top(self)
+            if sprite.collide_top(self):
+                self.vy = 0
+                self.standing = True
 
         elif dy < 0:  # choque hacia arriba
-            sprite.collide_bottom(self)
+            if sprite.collide_bottom(self):
+                self.vy = 0
 
         return
 
@@ -135,6 +276,8 @@ class Char(pygame.sprite.Sprite):
             return True
         return False
 
+    # ---------------- impactos (balas) ---------------
+
     def detect_impacts(self, group, dokill=True):
         collisions = pygame.sprite.spritecollide(self, group, dokill=dokill)
 
@@ -149,6 +292,8 @@ class Char(pygame.sprite.Sprite):
         if self.life <= 0:
             self.kill()
         return
+
+    # ---------------- objetivos ---------------
 
     def detect_objectives(self, group):
         collisions = pygame.sprite.spritecollide(self, group, dokill=False)
@@ -167,71 +312,10 @@ class Char(pygame.sprite.Sprite):
         return
 
 
-class GravityChar(Char):
-
-    def __init__(self, player_id, x, y, img, width=char_size, height=char_size, g=1, jumpspeed=18):
-        Char.__init__(self, player_id, x, y, img, width, height)
-
-        self.g = g
-        self.jumpspeed = jumpspeed
-        self.vy = 0
-
-        self.jumptries = 0
-        self.maxjumptries = 4
-        self.standing = False
-        self.falling = False
-
-    def update(self):
-        if self.standing and self.jumptries > 0:
-            self.vy = -self.jumpspeed
-            self.standing = False
-            play_jump(self.id)
-
-        self.jumptries -= 1
-        self.vy += self.g
-        self.rect.y += self.vy
-        self.standing = False
-        return
-
-    def draw(self, screen):
-        Char.draw(self, screen)
-        self.falling = False
-        return
-
-    def jump(self):
-        self.jumptries = self.maxjumptries
-        return
-
-    def fall(self):
-        self.falling = True
-        return
-
-    def collide(self, sprite):
-        dx = self.rect.x - self.old_rect.x
-        dy = self.rect.y - self.old_rect.y
-
-        if dx > 0:  # choque hacia la derecha
-            sprite.collide_left(self)
-
-        elif dx < 0:  # choque hacia la izquierda
-            sprite.collide_right(self)
-
-        if dy > 0:  # choque hacia abajo
-            if sprite.collide_top(self):
-                self.vy = 0
-                self.standing = True
-
-        elif dy < 0:  # choque hacia arriba
-            if sprite.collide_bottom(self):
-                self.vy = 0
-
-        return
-
-
-class Kirby(GravityChar):
+class Kirby(Character):
 
     def __init__(self, width, height, x, y, img, g=0.5, jumpspeed=8, max_jumps=3):
-        GravityChar.__init__(self, width, height, x, y, img, g, jumpspeed)
+        super().__init__(self, width, height, x, y, img, g=g, jumpspeed=jumpspeed)
 
         self.max_jumps = max_jumps
         self.jumps = max_jumps
@@ -289,7 +373,7 @@ class CustomGroup(pygame.sprite.Group):
 
     def draw(self, surface):
         for sprite in self.sprites():
-            self.spritedict[sprite] = sprite.draw(surface)
+            sprite.draw(surface)
         return
 
     def detect_collisions(self, *groups, dokill=False):

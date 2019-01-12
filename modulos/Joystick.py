@@ -1,6 +1,6 @@
 class Joystick:
     def __init__(self, joystick, a_button=0, start_button=7,
-                 x_axis=0, y_axis=1, x_orientation=1, y_orientation=1, treshold=0.4):
+                 x_axis=0, y_axis=1, x_orientation=1, y_orientation=1, treshold=0.6):
         self.joystick = joystick
 
         self.start_button = start_button
@@ -18,13 +18,13 @@ class Joystick:
         return self.x_orientation * self.joystick.get_axis(self.x_axis) > self.treshold
 
     def left(self):
-        return self.x_orientation * -self.joystick.get_axis(self.x_axis) > self.treshold
+        return -self.x_orientation * self.joystick.get_axis(self.x_axis) > self.treshold
 
     def up(self):
         return self.y_orientation * self.joystick.get_axis(self.y_axis) > self.treshold
 
     def down(self):
-        return self.y_orientation * -self.joystick.get_axis(self.y_axis) > self.treshold
+        return -self.y_orientation * self.joystick.get_axis(self.y_axis) > self.treshold
 
     def start_press(self):
         return self.joystick.get_button(self.start_button)
@@ -37,9 +37,9 @@ class Joystick:
                 return True
 
             self.a_pressed = 1
-
         else:
             self.a_pressed = 0
+
         return False
 
 
@@ -47,3 +47,30 @@ class XBoxJoystick(Joystick):
     def __init__(self, joy_id):
         Joystick.__init__(self, joy_id, a_button=0, start_button=7,
                           x_axis=0, y_axis=1, x_orientation=1, y_orientation=-1)
+
+
+class NullJoystick:
+
+    @staticmethod
+    def right():
+        return False
+
+    @staticmethod
+    def left():
+        return False
+
+    @staticmethod
+    def up():
+        return False
+
+    @staticmethod
+    def down():
+        return False
+
+    @staticmethod
+    def start_press():
+        return False
+
+    @staticmethod
+    def a_press():
+        return False

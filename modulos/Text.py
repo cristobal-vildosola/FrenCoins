@@ -9,19 +9,23 @@ fonts = {}
 
 class Text:
 
-    def __init__(self, text, x, y, color=(0, 0, 0), height=30, center=False, antialias=True):
+    def __init__(self, text, x=0, y=0, color=(0, 0, 0), height=30, center=False, antialias=True):
         global fonts
         if height not in fonts:
             fonts[height] = pygame.font.Font(path("static/freesansbold.ttf"), height)
 
         self.text = fonts[height].render(text, antialias, color)
 
-        if center:
-            self.pos = self.text.get_rect()
-            self.pos.center = (x, y)
-        else:
-            self.pos = self.text.get_rect().move(x, y)
+        self.pos = self.text.get_rect()
+        self.set_pos(x, y, center)
 
     def draw(self, screen):
         screen.blit(self.text, self.pos)
+        return
+
+    def set_pos(self, x, y, center=False):
+        if center:
+            self.pos.center = (x, y)
+        else:
+            self.pos.topleft = (x, y)
         return
