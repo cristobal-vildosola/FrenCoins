@@ -5,7 +5,7 @@ from pygame.locals import *
 
 from modulos.control.Player import Player
 from modulos.control.Driver import Driver
-from modulos.control.Joystick import XBoxJoystick
+from modulos.control.Joystick import init_joystick
 from modulos.utils import path
 
 
@@ -21,24 +21,13 @@ def main():
 
     # personajes
     player1 = Player(0)
-    player2 = Player(1, k_up=K_w, k_down=K_s, k_left=K_a, k_right=K_d)
-
-    players = [player1, player2]
 
     # controles
-    joysticks = []
-    for i in range(pygame.joystick.get_count()):
-        joystick = pygame.joystick.Joystick(i)
-        joystick.init()
+    if pygame.joystick.get_count() > 0:
+        joystick = init_joystick(0)
+        player1.joystick = joystick
 
-        print(joystick.get_name())
-        if joystick.get_name().lower().rfind("xbox") != -1:
-            joysticks.append(XBoxJoystick(joystick))
-
-            if i < len(players):
-                players[i].joystick = joysticks[i]
-
-    driver = Driver(screen, players)
+    driver = Driver(screen, [player1])
     while driver.running:
         driver.tick()
 

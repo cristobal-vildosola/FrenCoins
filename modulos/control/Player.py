@@ -31,19 +31,19 @@ class Player:
         self.driver = driver
 
     def actions(self, events, pressed):
-        # eventos
-        for event in events:
-            if event.type == KEYDOWN:
-                if event.key == self.k_up:
-                    self.driver.press_up(self)
-                if event.key == self.k_down:
-                    self.driver.press_down(self)
-                if event.key == self.k_left:
-                    self.driver.press_left(self)
-                if event.key == self.k_right:
-                    self.driver.press_right(self)
+        # eventos (solo player 1)
+        if self.id == 0:
+            for event in events:
+                if event.type == KEYDOWN:
+                    if event.key == self.k_up:
+                        self.driver.press_up(self)
+                    if event.key == self.k_down:
+                        self.driver.press_down(self)
+                    if event.key == self.k_left:
+                        self.driver.press_left(self)
+                    if event.key == self.k_right:
+                        self.driver.press_right(self)
 
-                if self.id == 0:
                     if event.key == K_RETURN:
                         self.driver.press_main(self)
                     if event.key == K_ESCAPE:

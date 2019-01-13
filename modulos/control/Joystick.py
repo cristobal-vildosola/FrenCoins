@@ -1,7 +1,10 @@
+import pygame
+
+
 class Joystick:
-    def __init__(self, joystick, main_button=0, start_button=7,
+    def __init__(self, joystick: pygame.joystick.Joystick, main_button=0, start_button=7,
                  x_axis=0, y_axis=1, x_orientation=1, y_orientation=1, x_treshold=0.5, y_treshold=0.7):
-        self.joystick = joystick
+        self.joystick: pygame.joystick.Joystick = joystick
 
         self.start_button = start_button
         self.main_button = main_button
@@ -61,6 +64,9 @@ class Joystick:
     def press_start(self):
         return not self.start_pressed and self.hold_start()
 
+    def get_id(self):
+        return self.joystick.get_id()
+
 
 class XBoxJoystick(Joystick):
     def __init__(self, joystick):
@@ -111,3 +117,16 @@ class NullJoystick(Joystick):
 
     def press_start(self):
         return False
+
+    def get_id(self):
+        return -1
+
+
+def init_joystick(joy_id: int):
+    joystick = pygame.joystick.Joystick(joy_id)
+    joystick.init()
+
+    if joystick.get_name().lower().rfind("xbox") != -1:
+        return XBoxJoystick(joystick)
+
+    return Joystick(joystick)

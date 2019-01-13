@@ -11,8 +11,11 @@ from modulos.utils import path
 class Driver:
     def __init__(self, screen: pygame.Surface, players: List[Player] = ()):
         self.players: List[Player] = players
+        self.used_joysticks = set()
+
         for player in players:
             player.set_driver(self)
+            self.used_joysticks.add(player.joystick.get_id())
 
         self.screen: pygame.Surface = screen
 
@@ -43,8 +46,9 @@ class Driver:
         self.state = state
         return
 
-    def add_player(self, player: Player):
-        self.players.append(player)
+    def add_player(self, joystick):
+        self.players.append(Player(len(self.players), driver=self, joystick=joystick))
+        self.used_joysticks.add(joystick.get_id())
         return
 
     # ----------- acciones -------------

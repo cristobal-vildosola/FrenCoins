@@ -65,6 +65,9 @@ class Menu:
     def select(self, player):
         self.menu_items[self.selected].select()
 
+    def add_player(self, player):
+        pass
+
 
 class PauseMenu(Menu):
     def __init__(self, driver):
@@ -88,20 +91,13 @@ class MainMenu(Menu):
         ]
         super().__init__(driver, items)
 
-    def action_right(self, player):
-        player.next_char()
-        return
-
-    def action_left(self, player):
-        player.prev_char()
-        return
-
 
 class CharSelectMenu(Menu):
     def __init__(self, driver):
+        self.char_select = MultiCharSelect(driver.players)
         items = [
             MenuText(text="Choose your character", height=60, color=(14, 117, 14)),
-            MultiCharSelect(driver.players),
+            self.char_select,
             Button(handler=StartGame(driver), text="Start!"),
             Button(handler=MainMenuHandler(driver), text="Main menu"),
         ]
@@ -113,4 +109,8 @@ class CharSelectMenu(Menu):
 
     def action_left(self, player):
         player.prev_char()
+        return
+
+    def add_player(self, player):
+        self.char_select.add_player(player)
         return

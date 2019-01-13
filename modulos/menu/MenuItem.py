@@ -28,17 +28,17 @@ class MenuItem:
 
 
 class Button(MenuItem):
+    padding = 20  # TODO: settings
+    margin = 20
 
-    def __init__(self, handler, text, width=200, height=30, padding=20, margin=20,
+    def __init__(self, handler, text, width=200, height=30,
                  color=(17, 76, 170), hover_color=(59, 133, 249), text_color=(215, 215, 215)):
-        # TODO: settings padding, margin, colors
+        # TODO: settings colors
         self.handler = handler
         self.text = Text(text, color=text_color, height=height)
 
-        self.padding = padding
-        self.margin = margin
-        self.height = height + 2 * padding
-        self.width = max(width, self.text.pos.right + 2 * padding)
+        self.height = height + 2 * self.padding
+        self.width = max(width, self.text.pos.right + 2 * self.padding)
 
         self.background = pygame.Surface([self.width, self.height])
         self.color = color
@@ -163,19 +163,16 @@ class CharSelect:
 
 
 class MultiCharSelect(MenuItem):
-    def __init__(self, players, char_size=100, padding=20, margin=20):
-        self.char_size = char_size
-        self.padding = padding
-        self.margin = margin
+    padding = 20  # TODO: settings
+    margin = 20
 
+    def __init__(self, players):
         self.selects = []
         for player in players:
-            self.selects.append(
-                CharSelect(player))
+            self.selects.append(CharSelect(player))
 
     def add_player(self, player):
-        self.selects.append(
-            CharSelect(player))
+        self.selects.append(CharSelect(player))
         return
 
     def is_selectable(self):

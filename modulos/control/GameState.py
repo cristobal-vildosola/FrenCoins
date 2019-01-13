@@ -1,9 +1,12 @@
-from modulos.control.Player import Player
-from modulos.menu.Menu import Menu, PauseMenu, MainMenu, CharSelectMenu
-from modulos.elements.Level import Level
-from modulos.elements.Group import CustomGroup
-
 from typing import List
+
+import pygame
+
+from modulos.control.Joystick import init_joystick
+from modulos.control.Player import Player
+from modulos.elements.Group import CustomGroup
+from modulos.elements.Level import Level
+from modulos.menu.Menu import Menu, PauseMenu, MainMenu, CharSelectMenu
 
 
 class GameState:
@@ -198,5 +201,15 @@ class InCharSelect(InMenu):
 
     def tick(self):
         super().tick()
+
         # detectar conección de nuevos controles
+        for i in range(pygame.joystick.get_count()):
+
+            # ignorar controles ya conectados
+            if i not in self.driver.used_joysticks:
+                joystick = init_joystick(i)
+
+                if joystick.hold_start():
+                    self.driver.add_player(joystick)
+                    self.menu.add_player(self.driver.players[-1])
         return
