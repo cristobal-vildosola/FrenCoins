@@ -17,9 +17,9 @@
 
   "cannons": [
     {
-      "x": 30, "y": 385, "bullet_vx": 8, "frecuencia": 40
+      "x": 30, "y": 385, "x_speed": 8, "frecuencia": 40
     }, {
-      "x": 720, "y": 250, "bullet_vx": -6
+      "x": 720, "y": 250, "x_speed": -6
     }
   ],
 

@@ -1,10 +1,12 @@
-import pygame
-from modulos.Menu import Menu, PauseMenu, MainMenu
-from modulos.Level import Level, load_level
-from modulos.Players import Player, CustomGroup
-from modulos.utils import path
-
 from typing import List
+
+import pygame
+
+from modulos.control.Player import Player
+from modulos.elements.Group import CustomGroup
+from modulos.elements.Level import Level, load_level
+from modulos.menu.Menu import Menu, PauseMenu, MainMenu
+from modulos.utils import path
 
 
 class Driver:
@@ -223,6 +225,7 @@ class InGame(State):
     def __init__(self, driver: Driver, levels: List[Level]):
         super().__init__(driver)
 
+        # TODO: reproducir música
         self.levels: List[Level] = levels
         self.level_num = 0
 

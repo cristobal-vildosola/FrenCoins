@@ -21,11 +21,11 @@
 
   "cannons": [
     {
-      "x": 30, "y": 385, "bullet_vx": 8, "frecuencia": 90
+      "x": 30, "y": 385, "x_speed": 8, "frecuencia": 90
     }, {
-      "x": 720, "y": 200, "bullet_vx": -6
+      "x": 720, "y": 200, "x_speed": -6
     }, {
-      "x": 30, "y": 30, "bullet_vx": 6, "bullet_vy": 4
+      "x": 30, "y": 30, "x_speed": 6, "y_speed": 4
     }
   ],
 

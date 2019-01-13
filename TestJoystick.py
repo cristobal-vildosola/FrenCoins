@@ -3,7 +3,7 @@ import os
 import pygame
 from pygame.locals import *
 
-from modulos.Text import Text
+from modulos.elements.Text import Text
 
 os.environ['SDL_VIDEO_CENTERED'] = '1'
 

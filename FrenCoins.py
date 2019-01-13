@@ -3,9 +3,9 @@ import os
 import pygame
 from pygame.locals import *
 
-from modulos.Players import Player
-from modulos.Driver import Driver
-from modulos.Joystick import XBoxJoystick
+from modulos.control.Player import Player
+from modulos.control.Driver import Driver
+from modulos.control.Joystick import XBoxJoystick
 from modulos.utils import path
 
 
