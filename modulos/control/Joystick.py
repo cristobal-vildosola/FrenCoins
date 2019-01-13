@@ -1,6 +1,6 @@
 class Joystick:
     def __init__(self, joystick, main_button=0, start_button=7,
-                 x_axis=0, y_axis=1, x_orientation=1, y_orientation=1, treshold=0.6):
+                 x_axis=0, y_axis=1, x_orientation=1, y_orientation=1, x_treshold=0.5, y_treshold=0.7):
         self.joystick = joystick
 
         self.start_button = start_button
@@ -11,9 +11,10 @@ class Joystick:
         self.prev_x_value = 0
         self.prev_y_value = 0
 
-        self.treshold = treshold
+        self.x_treshold = x_treshold
         self.x_axis = x_axis
         self.x_orientation = x_orientation
+        self.y_treshold = y_treshold
         self.y_axis = y_axis
         self.y_orientation = y_orientation
 
@@ -25,28 +26,28 @@ class Joystick:
         return
 
     def hold_up(self):
-        return self.y_orientation * self.joystick.get_axis(self.y_axis) > self.treshold
+        return self.y_orientation * self.joystick.get_axis(self.y_axis) > self.y_treshold
 
     def hold_down(self):
-        return -self.y_orientation * self.joystick.get_axis(self.y_axis) > self.treshold
+        return -self.y_orientation * self.joystick.get_axis(self.y_axis) > self.y_treshold
 
     def hold_left(self):
-        return -self.x_orientation * self.joystick.get_axis(self.x_axis) > self.treshold
+        return -self.x_orientation * self.joystick.get_axis(self.x_axis) > self.x_treshold
 
     def hold_right(self):
-        return self.x_orientation * self.joystick.get_axis(self.x_axis) > self.treshold
+        return self.x_orientation * self.joystick.get_axis(self.x_axis) > self.x_treshold
 
     def press_up(self):
-        return not self.y_orientation * self.prev_y_value > self.treshold and self.hold_up()
+        return self.y_orientation * self.prev_y_value <= self.y_treshold and self.hold_up()
 
     def press_down(self):
-        return not -self.y_orientation * self.prev_y_value > self.treshold and self.hold_down()
+        return -self.y_orientation * self.prev_y_value <= self.y_treshold and self.hold_down()
 
     def press_left(self):
-        return not -self.x_orientation * self.prev_x_value > self.treshold and self.hold_left()
+        return -self.x_orientation * self.prev_x_value <= self.x_treshold and self.hold_left()
 
     def press_right(self):
-        return not self.x_orientation * self.prev_x_value > self.treshold and self.hold_right()
+        return self.x_orientation * self.prev_x_value <= self.x_treshold and self.hold_right()
 
     def hold_main(self):
         return self.joystick.get_button(self.main_button)

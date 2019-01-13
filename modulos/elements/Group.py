@@ -4,7 +4,7 @@ import pygame
 class CustomGroup(pygame.sprite.Group):
 
     def __init__(self, *sprites):
-        pygame.sprite.Group.__init__(self, *sprites)
+        super().__init__(*sprites)
 
     def draw(self, surface):
         for sprite in self.sprites():

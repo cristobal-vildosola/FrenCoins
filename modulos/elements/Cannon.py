@@ -8,14 +8,15 @@ import math
 
 class Cannon(Block):
 
-    def __init__(self, x, y, frecuencia=60,
+    def __init__(self, x, y, frecuencia=60, width=50, height=50,
                  x_speed=0, y_speed=0, bullet_radius=5, bullet_damage=10, bullet_group=None):
-        pygame.sprite.Sprite.__init__(self)
+        # TODO: size settings
+        super().__init__(width, height, x, y)
 
         # posición
         self.image = pygame.image.load(path('static/img/cannon.png'))
         # escalar a tamaño
-        self.image = pygame.transform.smoothscale(self.image, (50, 50))
+        self.image = pygame.transform.smoothscale(self.image, (width, height))
         # voltear horizontalmente
         self.image = pygame.transform.flip(self.image, x_speed < 0, False)
 
@@ -68,7 +69,7 @@ class Cannon(Block):
 class Bullet(pygame.sprite.Sprite):
 
     def __init__(self, radius, x, y, x_speed, y_speed, damage=10, color=(0, 0, 0)):
-        pygame.sprite.Sprite.__init__(self)
+        super().__init__()
 
         # propiedades
         self.color = color

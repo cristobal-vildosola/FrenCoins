@@ -3,21 +3,21 @@
 
   "blocks": [
     {
-      "width": 30, "height": 600, "x": 0, "y": 0, "color": [60, 30, 0]
+      "width": 30, "height": 600, "x": 0, "y": 0
     }, {
-      "width": 800, "height": 30, "x": 0, "y": 0, "color": [60, 30, 0]
+      "width": 800, "height": 30, "x": 0, "y": 0
     }, {
-      "width": 30, "height": 600, "x": 770, "y": 0, "color": [60, 30, 0]
+      "width": 30, "height": 600, "x": 770, "y": 0
     }, {
-      "width": 800, "height": 30, "x": 0, "y": 570, "color": [60, 30, 0]
+      "width": 800, "height": 30, "x": 0, "y": 570
     }
   ],
 
   "platforms": [
     {
-      "width": 200, "height": 5, "x": 115, "y": 435, "color": [100, 10, 100]
+      "width": 200, "height": 5, "x": 115, "y": 435
     }, {
-      "width": 200, "height": 5, "x": 485, "y": 435, "color": [100, 10, 100]
+      "width": 200, "height": 5, "x": 485, "y": 435
     }
   ],
 

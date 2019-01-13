@@ -3,8 +3,9 @@ import pygame
 
 class Block(pygame.sprite.Sprite):
 
-    def __init__(self, width, height, x, y, color=(255, 0, 0)):
-        pygame.sprite.Sprite.__init__(self)
+    def __init__(self, width, height, x, y, color=(60, 30, 0)):
+        # TODO: settings color
+        super().__init__()
 
         # imagen a mostrar cada vez que se llama draw()
         self.image = pygame.Surface([width, height])
@@ -52,8 +53,9 @@ class Block(pygame.sprite.Sprite):
 
 class Platform(Block):
 
-    def __init__(self, width, height, x, y, color=(255, 0, 0)):
-        Block.__init__(self, width, height, x, y, color)
+    def __init__(self, width, height, x, y, color=(100, 10, 100)):
+        # TODO: settings color
+        super().__init__(width, height, x, y, color)
 
     # choque con el lado izquierdo, no hace nada
     def collide_left(self, moving_sprite):

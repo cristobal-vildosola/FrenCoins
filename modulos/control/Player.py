@@ -4,19 +4,24 @@ from modulos.control.Joystick import NullJoystick, Joystick
 from modulos.utils import path
 from modulos.elements.Character import Character
 
+sprites = ['Anouk', 'Ardila', 'Checho', 'Diggo', 'FatCow', 'Lecaros', 'LittleFrank',
+           'MrBear', 'Peibl', 'Pina', 'Shi', 'Tito', 'Tomimi']
+
 
 class Player:
-    def __init__(self, player_id: int, img: str = "Pina", driver=None, joystick: Joystick = NullJoystick(),
+    def __init__(self, player_id: int, driver=None, joystick: Joystick = NullJoystick(),
                  k_up=K_UP, k_down=K_DOWN, k_left=K_LEFT, k_right=K_RIGHT):
         self.driver = driver
         self.id = player_id
 
-        self.img = img
-        self.char: Character = Character(player_id, path(f'static/img/{self.img}.png'),
-                                         x=200 + 100 * self.id, y=200)
+        self.img = player_id
+        self.char: Character = None
+        self.restart_char()
+        # TODO: settings level char positions
 
         self.joystick: Joystick = joystick
 
+        # TODO: settings keys by player id
         self.k_up = k_up
         self.k_down = k_down
         self.k_left = k_left
@@ -82,7 +87,20 @@ class Player:
         self.joystick.update()
         return
 
+    def img_path(self):
+        return path(f'static/img/{sprites[self.img]}.png')
+
+    def next_char(self):
+        self.img = (self.img + 1) % len(sprites)
+        self.char.change_image(self.img_path())
+        return
+
+    def prev_char(self):
+        self.img = (self.img - 1) % len(sprites)
+        self.char.change_image(self.img_path())
+        return
+
     def restart_char(self):
-        self.char = Character(self.id, path(f'static/img/{self.img}.png'),
+        self.char = Character(self.id, self.img_path(),
                               x=200 + 100 * self.id, y=200)
         return

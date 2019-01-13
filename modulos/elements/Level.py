@@ -10,11 +10,11 @@ from modulos.elements.Text import Text
 class Level:
 
     def __init__(self, duration=30,
-                 coins=CustomGroup(), cannons=CustomGroup(), blocks=CustomGroup(), platforms=CustomGroup(), fps=60):
+                 coins=CustomGroup(), cannons=CustomGroup(), blocks=CustomGroup(), platforms=CustomGroup()):
 
         self.time = duration
         self.prep_time = 3
-        self.fps = fps
+        self.fps = 60  # TODO: setting
 
         self.coins = coins
 
@@ -59,10 +59,10 @@ class Level:
         self.blocks.draw(screen)
         self.platforms.draw(screen)
 
-        number_color = (200, 200, 200)
+        number_color = (200, 200, 200)  # TODO: setting
         if self.time < 5:
             number_color = (255, 0, 0)
-        Text(str(round(self.time, 1)), 400, 16, number_color, center=True, height=30).draw(screen)
+        Text(str(round(self.time, 1)), x=400, y=16, color=number_color, center=True, height=30).draw(screen)
 
         self.cannons.draw(screen)
 

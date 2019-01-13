@@ -2,7 +2,7 @@ import pygame
 
 from modulos.elements.Sound import play_jump, play_hit, play_coin
 
-char_size = 40
+char_size = 40  # TODO: setting
 
 
 class Character(pygame.sprite.Sprite):
@@ -10,11 +10,12 @@ class Character(pygame.sprite.Sprite):
     RIGHT = 1
 
     def __init__(self, player_id, img, x=0, y=0, width=char_size, height=char_size, max_life=100, g=1, jumpspeed=18):
-        pygame.sprite.Sprite.__init__(self)
+        # TODO: settings max_life, g, jumpspeed
+        super().__init__()
         self.id = player_id
 
         # imagen a mostrar cada vez que se llama draw()
-        self.image = pygame.image.load(img).convert_alpha()
+        self.image = pygame.image.load(img)
         self.image = pygame.transform.smoothscale(self.image, (width, height))
         self.direction = self.LEFT
 
@@ -42,7 +43,7 @@ class Character(pygame.sprite.Sprite):
         self.vy = 0
 
         self.jumptries = 0
-        self.maxjumptries = 4
+        self.maxjumptries = 4  # TODO: setting
         self.standing = False
         self.falling = False
 
@@ -53,12 +54,12 @@ class Character(pygame.sprite.Sprite):
         return
 
     def move_right(self):
-        self.move(dx=5)
+        self.move(dx=5)  # TODO: setting
         self.direction = self.RIGHT
         return
 
     def move_left(self):
-        self.move(dx=-5)
+        self.move(dx=-5)  # TODO: setting
         self.direction = self.LEFT
         return
 
@@ -77,13 +78,18 @@ class Character(pygame.sprite.Sprite):
             self.jumptries = 0
             play_jump(self.id)
 
-        self.jumptries -= 1
+        self.jumptries = max(self.jumptries - 1, 0)
         self.vy += self.g
         self.rect.y += self.vy
         self.standing = False
         return
 
     # ---------------- dibujar ---------------
+
+    def change_image(self, img):
+        self.image = pygame.image.load(img)
+        self.image = pygame.transform.smoothscale(self.image, (self.width, self.height))
+        return
 
     def draw(self, screen):
         image = self.image
@@ -108,7 +114,7 @@ class Character(pygame.sprite.Sprite):
     def draw_objectives(self, screen):
         if len(self.objectives) > 0:
             img = list(self.objectives)[0].image.copy()
-            img = pygame.transform.smoothscale(img, (10, 10))
+            img = pygame.transform.smoothscale(img, (10, 10))  # TODO: setting
 
             for i in range(len(self.objectives)):
                 screen.blit(img, self.rect.move(2, 2 + 12 * i).topright)
@@ -216,8 +222,8 @@ class Character(pygame.sprite.Sprite):
 
 class Kirby(Character):
 
-    def __init__(self, width, height, x, y, img, g=0.5, jumpspeed=8, max_jumps=3):
-        super().__init__(self, width, height, x, y, img, g=g, jumpspeed=jumpspeed)
+    def __init__(self, player_id, width, height, x, y, img, g=0.5, jumpspeed=8, max_jumps=3):
+        super().__init__(player_id, width, height, x, y, img, g=g, jumpspeed=jumpspeed)
 
         self.max_jumps = max_jumps
         self.jumps = max_jumps

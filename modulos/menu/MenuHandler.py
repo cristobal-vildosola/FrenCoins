@@ -6,6 +6,12 @@ class Handler:
         pass
 
 
+class CharSelect(Handler):
+    def handle(self):
+        self.driver.char_select()
+        return
+
+
 class StartGame(Handler):
     def handle(self):
         self.driver.start_game()

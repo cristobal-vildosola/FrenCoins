@@ -14,14 +14,14 @@ def main():
     # centrar ventana
     os.environ['SDL_VIDEO_CENTERED'] = '1'
 
-    screen_width, screen_height = 800, 600
+    screen_width, screen_height = 800, 600  # TODO: constant
     screen = pygame.display.set_mode((screen_width, screen_height))
     pygame.display.set_caption("FrenCoins")
     pygame.display.set_icon(pygame.image.load(path('static/img/favicon.png')))
 
     # personajes
     player1 = Player(0)
-    player2 = Player(1, img='FatCow', k_up=K_w, k_down=K_s, k_left=K_a, k_right=K_d)
+    player2 = Player(1, k_up=K_w, k_down=K_s, k_left=K_a, k_right=K_d)
 
     players = [player1, player2]
 
@@ -38,7 +38,7 @@ def main():
             if i < len(players):
                 players[i].joystick = joysticks[i]
 
-    driver = Driver(players, screen)
+    driver = Driver(screen, players)
     while driver.running:
         driver.tick()
 

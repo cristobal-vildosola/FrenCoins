@@ -3,13 +3,13 @@
 
   "blocks": [
     {
-      "width": 30, "height": 600, "x": 0, "y": 0, "color": [60, 30, 0]
+      "width": 30, "height": 600, "x": 0, "y": 0
     }, {
-      "width": 800, "height": 30, "x": 0, "y": 0, "color": [60, 30, 0]
+      "width": 800, "height": 30, "x": 0, "y": 0
     }, {
-      "width": 30, "height": 600, "x": 770, "y": 0, "color": [60, 30, 0]
+      "width": 30, "height": 600, "x": 770, "y": 0
     }, {
-      "width": 800, "height": 30, "x": 0, "y": 570, "color": [60, 30, 0]
+      "width": 800, "height": 30, "x": 0, "y": 570
     }
   ],
 
