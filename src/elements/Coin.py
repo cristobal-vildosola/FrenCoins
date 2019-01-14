@@ -1,6 +1,6 @@
 import pygame
 
-from modulos.utils import path
+from src.utils import path
 from settings.GUI import COIN_SIZE
 
 

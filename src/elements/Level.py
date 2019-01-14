@@ -1,10 +1,10 @@
 import json
 
-from modulos.elements.Block import Block, Platform
-from modulos.elements.Cannon import Cannon
-from modulos.elements.Coin import Coin
-from modulos.elements.Group import CustomGroup
-from modulos.elements.Text import Text
+from src.elements.Block import Block, Platform
+from src.elements.Cannon import Cannon
+from src.elements.Coin import Coin
+from src.elements.Group import CustomGroup
+from src.elements.Text import Text
 from settings.GUI import SCREEN_WIDTH, SCREEN_HEIGHT, FPS, BACKGROUND_COLOR, TIMER_COLOR, TIMER_ENDING_COLOR
 
 

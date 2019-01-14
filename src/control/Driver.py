@@ -2,11 +2,11 @@ from typing import List
 
 import pygame
 
-from modulos.control.Player import Player
-from modulos.control.GameState import GameState, InMainMenu, InGame, InCharSelect, InStartScreen, Paused, GameWon, \
+from src.control.Player import Player
+from src.control.GameState import GameState, InMainMenu, InGame, InCharSelect, InStartScreen, Paused, GameWon, \
     GameOver
-from modulos.elements.Level import load_level
-from modulos.utils import path
+from src.elements.Level import load_level
+from src.utils import path
 from settings.GUI import FPS
 
 

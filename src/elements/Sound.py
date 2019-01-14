@@ -1,6 +1,6 @@
 import pygame
 
-from modulos.utils import path
+from src.utils import path
 
 pygame.mixer.init()
 pygame.mixer.set_num_channels(12)

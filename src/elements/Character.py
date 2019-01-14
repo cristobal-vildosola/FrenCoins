@@ -2,9 +2,9 @@ from typing import Union
 
 import pygame
 
-from modulos.elements.Coin import Coin
-from modulos.elements.Sound import play_jump, play_hit, play_coin
-from modulos.elements.Cannon import Bullet
+from src.elements.Coin import Coin
+from src.elements.Sound import play_jump, play_hit, play_coin
+from src.elements.Cannon import Bullet
 from settings.GUI import CHAR_SIZE, CHAR_COIN_SIZE
 
 

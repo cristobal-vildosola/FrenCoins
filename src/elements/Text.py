@@ -1,6 +1,6 @@
 import pygame
 
-from modulos.utils import path
+from src.utils import path
 
 # los fonts se tienen que inicializar, para no hacerlo cada vez que
 # creo un nuevo texto los guardo en un diccionario según tamaño

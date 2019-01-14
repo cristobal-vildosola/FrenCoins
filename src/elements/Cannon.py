@@ -2,9 +2,9 @@ import math
 
 import pygame
 
-from modulos.elements.Block import Block
-from modulos.elements.Sound import play_fire
-from modulos.utils import path
+from src.elements.Block import Block
+from src.elements.Sound import play_fire
+from src.utils import path
 from settings.GUI import CANNON_SIZE
 
 

@@ -1,5 +1,5 @@
-from modulos.control.Driver import Driver
-from modulos.utils import init_screen
+from src.control.Driver import Driver
+from src.utils import init_screen
 
 
 def main():

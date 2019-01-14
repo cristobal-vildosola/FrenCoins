@@ -1,7 +1,7 @@
 from typing import List
 
-from modulos.menu.MenuHandler import *
-from modulos.menu.MenuItem import MenuItem, Button, MenuText, MultiCharSelect
+from src.menu.MenuHandler import *
+from src.menu.MenuItem import MenuItem, Button, MenuText, MultiCharSelect
 from settings.GUI import SCREEN_HEIGHT, SCREEN_WIDTH, TITLE_COLOR
 
 

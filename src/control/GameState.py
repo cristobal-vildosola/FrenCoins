@@ -2,14 +2,14 @@ from typing import List
 
 import pygame
 
-from modulos.control.Joystick import init_joystick, NullJoystick
-from modulos.control.Player import Player
-from modulos.elements.Group import CustomGroup
-from modulos.elements.Level import Level
-from modulos.elements.Sound import jump_sound, hit_sound, play_background, stop_background
-from modulos.menu.Menu import Menu, CharSelectMenu
-from modulos.menu.MenuHandler import *
-from modulos.menu.MenuItem import Button, MenuText
+from src.control.Joystick import init_joystick, NullJoystick
+from src.control.Player import Player
+from src.elements.Group import CustomGroup
+from src.elements.Level import Level
+from src.elements.Sound import jump_sound, hit_sound, play_background, stop_background
+from src.menu.Menu import Menu, CharSelectMenu
+from src.menu.MenuHandler import *
+from src.menu.MenuItem import Button, MenuText
 from settings.GUI import TITLE_COLOR, SUBTITLE_COLOR, MENU_BACKGROUND
 
 
