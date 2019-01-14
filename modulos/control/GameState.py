@@ -6,9 +6,10 @@ from modulos.control.Joystick import init_joystick, NullJoystick
 from modulos.control.Player import Player
 from modulos.elements.Group import CustomGroup
 from modulos.elements.Level import Level
+from modulos.elements.Sound import jump_sound, hit_sound
 from modulos.menu.Menu import Menu, CharSelectMenu
-from modulos.menu.MenuItem import Button, MenuText
 from modulos.menu.MenuHandler import *
+from modulos.menu.MenuItem import Button, MenuText
 
 
 class GameState:
@@ -17,10 +18,6 @@ class GameState:
 
     def tick(self, events):
         pass
-
-    def set_state(self, state):
-        self.driver.set_state(state)
-        return
 
     def press_up(self, player: Player):
         pass
@@ -101,14 +98,14 @@ class InStartScreen(MenuState):
 
             if joystick.hold_start():
                 self.driver.add_player(joystick)
-                self.set_state(InMainMenu(self.driver))
+                self.driver.main_menu()
 
         # detectar teclado
         for event in events:
             if event.type == pygame.KEYDOWN:
                 if event.key == pygame.K_RETURN:
                     self.driver.add_player(NullJoystick())
-                    self.set_state(InMainMenu(self.driver))
+                    self.driver.main_menu()
         return
 
 
@@ -121,38 +118,6 @@ class InMainMenu(MenuState):
             Button(handler=QuitGame(driver), text="Exit", color=(170, 0, 0), hover_color=(220, 0, 0)),
         ]
         super().__init__(driver, Menu(driver, items))
-
-
-class Paused(MenuState):
-    def __init__(self, driver, prev_state: GameState):
-        items = [
-            MenuText("Pause", height=100, color=(217, 217, 217)),
-            Button(handler=ContinueGame(driver), text="Continue"),
-            Button(handler=StartGame(driver), text="Restart"),
-            Button(handler=MainMenuHandler(driver), text="Main menu"),
-            Button(handler=QuitGame(driver), text="Exit", color=(170, 0, 0), hover_color=(220, 0, 0)),
-        ]
-        super().__init__(driver, Menu(driver, items))
-
-        self.prev_state = prev_state
-
-        # oscurecer juego
-        self.background = self.driver.screen.copy()
-        self.background.fill((0, 0, 0))
-        self.background.set_alpha(150)  # TODO: setting darkness
-        self.driver.screen.blit(self.background, (0, 0))
-
-    def tick(self, events):
-        self.menu.draw(self.driver.screen)
-        return
-
-    def press_start(self, player: Player):
-        self.unpause()
-        return
-
-    def unpause(self):
-        self.set_state(self.prev_state)
-        return
 
 
 class InCharSelect(MenuState):
@@ -203,7 +168,6 @@ class InGame(GameState):
         self.check_level_end()
 
         # dibujar
-        self.driver.screen.fill((25, 115, 200))
         level.draw(self.driver.screen)
         chars.draw(self.driver.screen)
         pass
@@ -225,7 +189,7 @@ class InGame(GameState):
         return
 
     def press_start(self, player: Player):
-        self.set_state(Paused(self.driver, self))
+        self.driver.pause(self)
         return
 
     def press_main(self, player: Player):
@@ -242,18 +206,102 @@ class InGame(GameState):
 
             if self.level_num >= len(self.levels):
                 if len(chars) > 0:
-                    # TODO terminar juego, estado GameWon
-                    self.set_state(InMainMenu(self.driver))
+                    self.driver.game_won(level)
                     return
 
                 else:
-                    # TODO terminar juego, estado GameOver
-                    self.set_state(InMainMenu(self.driver))
+                    self.driver.game_over(level)
                     return
 
         if len(chars) == 0:
-            # TODO terminar juego, estado GameOver
-            self.set_state(InMainMenu(self.driver))
+            self.driver.game_over(level)
             return
 
+        return
+
+
+class Paused(MenuState):
+    def __init__(self, driver, prev_state: InGame):
+        items = [
+            MenuText("Pause", height=100, color=(217, 217, 217)),
+            Button(handler=ContinueGame(driver), text="Continue"),
+            Button(handler=StartGame(driver), text="Restart"),
+            Button(handler=MainMenuHandler(driver), text="Main menu"),
+            Button(handler=QuitGame(driver), text="Exit", color=(170, 0, 0), hover_color=(220, 0, 0)),
+        ]
+        super().__init__(driver, Menu(driver, items))
+
+        self.prev_state = prev_state
+
+        # oscurecer juego
+        self.background = self.driver.screen.copy()
+        self.background.fill((0, 0, 0))
+        self.background.set_alpha(150)  # TODO: setting darkness
+
+    def tick(self, events):
+        self.prev_state.levels[self.prev_state.level_num].draw(self.driver.screen)
+        self.driver.screen.blit(self.background, (0, 0))
+        self.menu.draw(self.driver.screen)
+        return
+
+    def press_start(self, player: Player):
+        self.unpause()
+        return
+
+    def unpause(self):
+        self.driver.unpause(self.prev_state)
+        return
+
+
+class GameOver(MenuState):
+    def __init__(self, driver, level):
+        items = [
+            MenuText(text="Game Over", height=100, color=(200, 10, 10)),
+            MenuText(text="Press START to go back to Main Menu", height=40, color=(200, 200, 200)),
+        ]
+        super().__init__(driver, Menu(driver, items))
+        self.level = level
+
+    def tick(self, events):
+        self.level.draw(self.driver.screen)
+        self.menu.draw(self.driver.screen)
+        return
+
+    def press_start(self, player: Player):
+        self.driver.main_menu()
+        return
+
+
+class GameWon(MenuState):
+    def __init__(self, driver, level: Level):
+        items = [
+            MenuText(text="You Won!", height=100, color=(10, 200, 10)),
+            MenuText(text="Press START to go back to Main Menu", height=40, color=(200, 200, 200)),
+        ]
+        super().__init__(driver, Menu(driver, items))
+
+        self.level = level
+        self.chars = CustomGroup()
+        for player in self.driver.players:
+            self.chars.add(player.char)
+
+        jump_sound.set_volume(0)
+        hit_sound.set_volume(0)
+
+    def tick(self, events):
+        for char in self.chars:
+            char.jump()
+
+        self.chars.update()
+        self.level.detect_collisions(self.chars)
+
+        self.level.draw(self.driver.screen)
+        self.chars.draw(self.driver.screen)
+        self.menu.draw(self.driver.screen)
+        return
+
+    def press_start(self, player: Player):
+        jump_sound.set_volume(1)
+        hit_sound.set_volume(1)
+        self.driver.main_menu()
         return

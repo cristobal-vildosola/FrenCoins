@@ -3,7 +3,8 @@ from typing import List
 import pygame
 
 from modulos.control.Player import Player
-from modulos.control.GameState import GameState, InMainMenu, InGame, InCharSelect, InStartScreen
+from modulos.control.GameState import GameState, InMainMenu, InGame, InCharSelect, InStartScreen, Paused, GameWon, \
+    GameOver
 from modulos.elements.Level import load_level
 from modulos.utils import path
 
@@ -91,6 +92,10 @@ class Driver:
 
     # ----------- control del juego -------------
 
+    def main_menu(self):
+        self.set_state(InMainMenu(self))
+        return
+
     def char_select(self):
         self.set_state(InCharSelect(self))
 
@@ -105,9 +110,19 @@ class Driver:
         self.set_state(InGame(self, levels))
         return
 
-    def main_menu(self):
-        self.set_state(InMainMenu(self))
+    def pause(self, prev_state):
+        self.set_state(Paused(self, prev_state))
         return
+
+    def unpause(self, prev_state):
+        self.set_state(prev_state)
+        return
+
+    def game_won(self, level):
+        self.set_state(GameWon(self, level))
+
+    def game_over(self, level):
+        self.set_state(GameOver(self, level))
 
     def quit_game(self):
         pygame.quit()

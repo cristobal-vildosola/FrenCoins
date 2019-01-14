@@ -57,6 +57,7 @@ class Level:
         return
 
     def draw(self, screen):
+        screen.fill((25, 115, 200))
 
         self.blocks.draw(screen)
         self.platforms.draw(screen)
