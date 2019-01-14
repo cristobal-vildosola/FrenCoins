@@ -3,23 +3,19 @@ from typing import List
 import pygame
 
 from modulos.control.Player import Player
-from modulos.control.GameState import GameState, InMainMenu, InGame, InCharSelect
+from modulos.control.GameState import GameState, InMainMenu, InGame, InCharSelect, InStartScreen
 from modulos.elements.Level import load_level
 from modulos.utils import path
 
 
 class Driver:
-    def __init__(self, screen: pygame.Surface, players: List[Player] = ()):
-        self.players: List[Player] = players
+    def __init__(self, screen: pygame.Surface):
+        self.players: List[Player] = []
         self.used_joysticks = set()
-
-        for player in players:
-            player.set_driver(self)
-            self.used_joysticks.add(player.joystick.get_id())
 
         self.screen: pygame.Surface = screen
 
-        self.state: GameState = InMainMenu(self)
+        self.state: GameState = InStartScreen(self)
         self.clock: pygame.time.Clock = pygame.time.Clock()
         self.fps: int = 60  # TODO: constant
 

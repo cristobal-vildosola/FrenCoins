@@ -11,7 +11,7 @@ class Menu:
         self.menu_items: List[MenuItem] = menu_items
         self.selected = 0
         if len(menu_items) > 0:
-            self.ensure_selectable(self.select_next)
+            self.ensure_selectable()
 
         self.x = x
         self.screen_height = screen_height
@@ -38,19 +38,19 @@ class Menu:
 
     def select_next(self):
         self.selected = (self.selected + 1) % len(self.menu_items)
-        self.ensure_selectable(self.select_next)
+        self.ensure_selectable()
         return
 
     def select_previous(self):
         self.selected = (self.selected - 1) % len(self.menu_items)
-        self.ensure_selectable(self.select_previous)
+        self.ensure_selectable(direction=-1)
         return
 
-    def ensure_selectable(self, next_item):
+    def ensure_selectable(self, direction=1):
         current = self.selected
 
         while not self.menu_items[self.selected].is_selectable():
-            next_item()
+            self.selected = (self.selected + direction) % len(self.menu_items)
 
             if current == self.selected:
                 break

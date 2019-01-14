@@ -1,11 +1,8 @@
 import os
 
 import pygame
-from pygame.locals import *
 
-from modulos.control.Player import Player
 from modulos.control.Driver import Driver
-from modulos.control.Joystick import init_joystick
 from modulos.utils import path
 
 
@@ -19,15 +16,7 @@ def main():
     pygame.display.set_caption("FrenCoins")
     pygame.display.set_icon(pygame.image.load(path('static/img/favicon.png')))
 
-    # personajes
-    player1 = Player(0)
-
-    # controles
-    if pygame.joystick.get_count() > 0:
-        joystick = init_joystick(0)
-        player1.joystick = joystick
-
-    driver = Driver(screen, [player1])
+    driver = Driver(screen)
     while driver.running:
         driver.tick()
 

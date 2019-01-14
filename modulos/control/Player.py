@@ -17,7 +17,6 @@ class Player:
         self.img = player_id
         self.char: Character = None
         self.restart_char()
-        # TODO: settings level char positions
 
         self.joystick: Joystick = joystick
 
@@ -49,15 +48,15 @@ class Player:
                     if event.key == K_ESCAPE:
                         self.driver.press_start(self)
 
-        # teclas apretadas
-        if pressed[self.k_up]:
-            self.driver.hold_up(self)
-        if pressed[self.k_down]:
-            self.driver.hold_down(self)
-        if pressed[self.k_left]:
-            self.driver.hold_left(self)
-        if pressed[self.k_right]:
-            self.driver.hold_right(self)
+            # teclas apretadas
+            if pressed[self.k_up]:
+                self.driver.hold_up(self)
+            if pressed[self.k_down]:
+                self.driver.hold_down(self)
+            if pressed[self.k_left]:
+                self.driver.hold_left(self)
+            if pressed[self.k_right]:
+                self.driver.hold_right(self)
 
         # joystick
         if self.joystick.hold_up():

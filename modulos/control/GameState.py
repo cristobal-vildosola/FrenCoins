@@ -6,7 +6,9 @@ from modulos.control.Joystick import init_joystick
 from modulos.control.Player import Player
 from modulos.elements.Group import CustomGroup
 from modulos.elements.Level import Level
-from modulos.menu.Menu import Menu, PauseMenu, MainMenu, CharSelectMenu
+from modulos.menu.Menu import Menu, CharSelectMenu
+from modulos.menu.MenuItem import Button, MenuText
+from modulos.menu.MenuHandler import *
 
 
 class GameState:
@@ -51,7 +53,7 @@ class GameState:
         pass
 
 
-class InMenu(GameState):
+class MenuState(GameState):
     def __init__(self, driver, menu: Menu):
         super().__init__(driver)
         self.menu: Menu = menu
@@ -82,9 +84,49 @@ class InMenu(GameState):
         return
 
 
-class Paused(InMenu):
+class InStartScreen(MenuState):
+    def __init__(self, driver):
+        items = [
+            MenuText(text="FrenCoins", height=120, color=(14, 117, 14)),
+            MenuText(text="Press START to begin", height=40),
+        ]
+        super().__init__(driver, Menu(driver, items))
+
+    def tick(self):
+        super().tick()
+
+        # detectar conección de nuevos controles
+        for i in range(pygame.joystick.get_count()):
+            joystick = init_joystick(i)
+
+            if joystick.hold_start():
+                self.driver.add_player(joystick)
+                self.menu.add_player(self.driver.players[-1])
+                self.set_state(InMainMenu(self.driver))
+
+
+class InMainMenu(MenuState):
+    def __init__(self, driver):
+        items = [
+            MenuText(text="FrenCoins", height=100, color=(14, 117, 14)),
+            Button(handler=CharSelect(driver), text="Start Game"),
+            Button(handler=MainMenuHandler(driver), text="Instructions"),
+            Button(handler=QuitGame(driver), text="Exit", color=(170, 0, 0), hover_color=(220, 0, 0)),
+        ]
+        super().__init__(driver, Menu(driver, items))
+
+
+class Paused(MenuState):
     def __init__(self, driver, prev_state: GameState):
-        super().__init__(driver, PauseMenu(driver))
+        items = [
+            MenuText("Pause", height=100, color=(217, 217, 217)),
+            Button(handler=ContinueGame(driver), text="Continue"),
+            Button(handler=StartGame(driver), text="Restart"),
+            Button(handler=MainMenuHandler(driver), text="Main menu"),
+            Button(handler=QuitGame(driver), text="Exit", color=(170, 0, 0), hover_color=(220, 0, 0)),
+        ]
+        super().__init__(driver, Menu(driver, items))
+
         self.prev_state = prev_state
 
         # oscurecer juego
@@ -106,9 +148,24 @@ class Paused(InMenu):
         return
 
 
-class InMainMenu(InMenu):
+class InCharSelect(MenuState):
     def __init__(self, driver):
-        super().__init__(driver, MainMenu(driver))
+        super().__init__(driver, CharSelectMenu(driver))
+
+    def tick(self):
+        super().tick()
+
+        # detectar conección de nuevos controles
+        for i in range(pygame.joystick.get_count()):
+
+            # ignorar controles ya conectados
+            if i not in self.driver.used_joysticks:
+                joystick = init_joystick(i)
+
+                if joystick.hold_start():
+                    self.driver.add_player(joystick)
+                    self.menu.add_player(self.driver.players[-1])
+        return
 
 
 class InGame(GameState):
@@ -192,24 +249,4 @@ class InGame(GameState):
             self.set_state(InMainMenu(self.driver))
             return
 
-        return
-
-
-class InCharSelect(InMenu):
-    def __init__(self, driver):
-        super().__init__(driver, CharSelectMenu(driver))
-
-    def tick(self):
-        super().tick()
-
-        # detectar conección de nuevos controles
-        for i in range(pygame.joystick.get_count()):
-
-            # ignorar controles ya conectados
-            if i not in self.driver.used_joysticks:
-                joystick = init_joystick(i)
-
-                if joystick.hold_start():
-                    self.driver.add_player(joystick)
-                    self.menu.add_player(self.driver.players[-1])
         return

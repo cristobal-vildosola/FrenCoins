@@ -26,6 +26,8 @@ class Level:
         for cannon in cannons:
             cannon.set_bullet_group(self.bullets)
 
+        # TODO: settings level char positions
+
     def update(self):
         if self.prep_time > 0:
             self.prep_time -= 1.0 / self.fps
