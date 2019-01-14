@@ -1,6 +1,7 @@
 import pygame
 
 from modulos.elements.Sound import play_jump, play_hit, play_coin
+from modulos.elements.Cannon import Bullet
 
 char_size = 40  # TODO: setting
 
@@ -186,16 +187,26 @@ class Character(pygame.sprite.Sprite):
 
     # ---------------- impactos (balas) ---------------
 
+    def circle_collide(self, sprite: pygame.sprite.Sprite):
+        closest_x = min(self.rect.right, max(self.rect.left, sprite.rect.centerx))
+        closest_y = min(self.rect.bottom, max(self.rect.top, sprite.rect.centery))
+
+        dist = (closest_x - sprite.rect.centerx) ** 2 + (closest_y - sprite.rect.centery) ** 2
+        return dist <= (sprite.rect.width / 2) ** 2
+
     def detect_impacts(self, group, dokill=True):
-        collisions = pygame.sprite.spritecollide(self, group, dokill=dokill)
+        collisions = pygame.sprite.spritecollide(self, group, dokill=False)
 
         for sprite in collisions:
-            self.impact(sprite)
-            play_hit(self.id)
+            if self.circle_collide(sprite):
+                if dokill:
+                    sprite.kill()
+                self.impact(sprite)
+                play_hit(self.id)
         return
 
-    def impact(self, sprite):
-        sprite.impact(self)
+    def impact(self, bullet: Bullet):
+        bullet.impact(self)
 
         if self.life <= 0:
             self.kill()
@@ -207,7 +218,8 @@ class Character(pygame.sprite.Sprite):
         collisions = pygame.sprite.spritecollide(self, group, dokill=False)
 
         for sprite in collisions:
-            self.get_objective(sprite)
+            if self.circle_collide(sprite):
+                self.get_objective(sprite)
 
     def get_objective(self, objective):
         if objective not in self.objectives:

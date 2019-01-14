@@ -2,7 +2,7 @@ from typing import List
 
 import pygame
 
-from modulos.control.Joystick import init_joystick
+from modulos.control.Joystick import init_joystick, NullJoystick
 from modulos.control.Player import Player
 from modulos.elements.Group import CustomGroup
 from modulos.elements.Level import Level
@@ -15,7 +15,7 @@ class GameState:
     def __init__(self, driver):
         self.driver = driver
 
-    def tick(self):
+    def tick(self, events):
         pass
 
     def set_state(self, state):
@@ -58,7 +58,7 @@ class MenuState(GameState):
         super().__init__(driver)
         self.menu: Menu = menu
 
-    def tick(self):
+    def tick(self, events):
         self.driver.screen.fill((226, 205, 86))
         self.menu.draw(self.driver.screen)
         return
@@ -88,21 +88,28 @@ class InStartScreen(MenuState):
     def __init__(self, driver):
         items = [
             MenuText(text="FrenCoins", height=120, color=(14, 117, 14)),
-            MenuText(text="Press START to begin", height=40),
+            MenuText(text="Press START / ENTER to begin", height=40),
         ]
         super().__init__(driver, Menu(driver, items))
 
-    def tick(self):
-        super().tick()
+    def tick(self, events):
+        super().tick(events)
 
-        # detectar conección de nuevos controles
+        # detectar control jugador 1
         for i in range(pygame.joystick.get_count()):
             joystick = init_joystick(i)
 
             if joystick.hold_start():
                 self.driver.add_player(joystick)
-                self.menu.add_player(self.driver.players[-1])
                 self.set_state(InMainMenu(self.driver))
+
+        # detectar teclado
+        for event in events:
+            if event.type == pygame.KEYDOWN:
+                if event.key == pygame.K_RETURN:
+                    self.driver.add_player(NullJoystick())
+                    self.set_state(InMainMenu(self.driver))
+        return
 
 
 class InMainMenu(MenuState):
@@ -135,7 +142,7 @@ class Paused(MenuState):
         self.background.set_alpha(150)  # TODO: setting darkness
         self.driver.screen.blit(self.background, (0, 0))
 
-    def tick(self):
+    def tick(self, events):
         self.menu.draw(self.driver.screen)
         return
 
@@ -152,8 +159,8 @@ class InCharSelect(MenuState):
     def __init__(self, driver):
         super().__init__(driver, CharSelectMenu(driver))
 
-    def tick(self):
-        super().tick()
+    def tick(self, events):
+        super().tick(events)
 
         # detectar conección de nuevos controles
         for i in range(pygame.joystick.get_count()):
@@ -181,7 +188,7 @@ class InGame(GameState):
             player.restart_char()
             self.chars.add(player.char)
 
-    def tick(self):
+    def tick(self, events):
         chars = self.chars
         level = self.levels[self.level_num]
 

@@ -32,7 +32,7 @@ class Driver:
         for player in self.players:
             player.actions(events, pressed)
 
-        self.state.tick()
+        self.state.tick(events)
 
         self.clock.tick(self.fps)
         pygame.display.flip()

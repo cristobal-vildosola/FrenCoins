@@ -68,12 +68,6 @@ class Joystick:
         return self.joystick.get_id()
 
 
-class XBoxJoystick(Joystick):
-    def __init__(self, joystick):
-        Joystick.__init__(self, joystick, main_button=0, start_button=7,
-                          x_axis=0, y_axis=1, x_orientation=1, y_orientation=-1)
-
-
 class NullJoystick(Joystick):
 
     def __init__(self):
@@ -122,11 +116,26 @@ class NullJoystick(Joystick):
         return -1
 
 
+class XBoxJoystick(Joystick):
+    def __init__(self, joystick):
+        Joystick.__init__(self, joystick, main_button=0, start_button=7,
+                          x_axis=0, y_axis=1, x_orientation=1, y_orientation=-1)
+
+
+class USBJoystick(Joystick):
+    def __init__(self, joystick):
+        Joystick.__init__(self, joystick, main_button=2, start_button=9,
+                          x_axis=0, y_axis=1, x_orientation=1, y_orientation=-1)
+
+
 def init_joystick(joy_id: int):
     joystick = pygame.joystick.Joystick(joy_id)
     joystick.init()
 
     if joystick.get_name().lower().rfind("xbox") != -1:
         return XBoxJoystick(joystick)
+
+    if joystick.get_name().lower().rfind("usb") != -1:
+        return USBJoystick(joystick)
 
     return Joystick(joystick)
