@@ -14,13 +14,13 @@ class Player:
         self.driver = driver
         self.id = player_id
 
-        self.img = player_id
+        self.img = player_id % len(sprites)
         self.char: Character = None
         self.restart_char()
 
         self.joystick: Joystick = joystick
 
-        # TODO: settings keys by player id
+        # TODO settings keys by player id
         self.k_up = k_up
         self.k_down = k_down
         self.k_left = k_left
@@ -101,5 +101,5 @@ class Player:
 
     def restart_char(self):
         self.char = Character(self.id, self.img_path(),
-                              x=200 + 100 * self.id, y=200)
+                              x=50 + 50 * self.id, y=200)
         return

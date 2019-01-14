@@ -27,12 +27,12 @@ background_sound = pygame.mixer.Sound(path("static/sounds/mii2.wav"))
 
 
 def play_jump(player_id):
-    channels[player_id].play(jump_sound)
+    channels[player_id % 4].play(jump_sound)
     return
 
 
 def play_hit(player_id):
-    channels[player_id + 4].play(hit_sound)
+    channels[player_id % 4 + 4].play(hit_sound)
     return
 
 

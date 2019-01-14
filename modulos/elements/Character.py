@@ -1,5 +1,8 @@
+from typing import Union
+
 import pygame
 
+from modulos.elements.Coin import Coin
 from modulos.elements.Sound import play_jump, play_hit, play_coin
 from modulos.elements.Cannon import Bullet
 
@@ -187,7 +190,7 @@ class Character(pygame.sprite.Sprite):
 
     # ---------------- impactos (balas) ---------------
 
-    def circle_collide(self, sprite: pygame.sprite.Sprite):
+    def circle_collide(self, sprite: Union[Coin, Bullet]):
         closest_x = min(self.rect.right, max(self.rect.left, sprite.rect.centerx))
         closest_y = min(self.rect.bottom, max(self.rect.top, sprite.rect.centery))
 
