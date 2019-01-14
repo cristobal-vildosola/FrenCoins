@@ -1,5 +1,9 @@
 import pygame
+
 from modulos.elements.Text import Text
+from settings.GUI import BUTTON_MARGIN, BUTTON_PADDING, BUTTON_TEXT_COLOR, BUTTON_HOVER_COLOR, BUTTON_COLOR, \
+    BUTTON_WIDTH, SELECT_MARGIN, SELECT_PADDING, SELECT_INNER_PADDING, SELECT_OUTER_PADDING, SELECT_CHAR_SIZE, \
+    SELECT_TRIANGLE_SIZE, SELECT_TRIANGLE_COLOR, TEXT_MARGIN
 
 
 class MenuItem:
@@ -28,16 +32,15 @@ class MenuItem:
 
 
 class Button(MenuItem):
-    padding = 20  # TODO: settings
-    margin = 20
+    padding = BUTTON_PADDING
+    margin = BUTTON_MARGIN
 
-    def __init__(self, handler, text, width=200, height=30,
-                 color=(17, 76, 170), hover_color=(59, 133, 249), text_color=(215, 215, 215)):
-        # TODO: settings colors
+    def __init__(self, handler, text, width=BUTTON_WIDTH, text_size=30,
+                 color=BUTTON_COLOR, hover_color=BUTTON_HOVER_COLOR, text_color=BUTTON_TEXT_COLOR):
         self.handler = handler
-        self.text = Text(text, color=text_color, height=height)
+        self.text = Text(text, color=text_color, size=text_size)
 
-        self.height = height + 2 * self.padding
+        self.height = text_size + 2 * self.padding
         self.width = max(width, self.text.pos.right + 2 * self.padding)
 
         self.background = pygame.Surface([self.width, self.height])
@@ -68,9 +71,9 @@ class Button(MenuItem):
 
 class MenuText(MenuItem):
 
-    def __init__(self, text, height=30, color=(0, 0, 0), margin=20):
-        self.text = Text(text, color=color, height=height)
-        self.height = height
+    def __init__(self, text, size=30, color=(0, 0, 0), margin=TEXT_MARGIN):
+        self.text = Text(text, color=color, size=size)
+        self.height = size
         self.margin = margin
 
     @staticmethod
@@ -90,11 +93,11 @@ class MenuText(MenuItem):
 
 
 class CharSelect:
-    inner_padding = 5
-    outer_padding = 10
+    inner_padding = SELECT_INNER_PADDING
+    outer_padding = SELECT_OUTER_PADDING
 
-    triangle_size = 20
-    char_size = 100  # TODO: setting
+    triangle_size = SELECT_TRIANGLE_SIZE
+    char_size = SELECT_CHAR_SIZE
 
     width = char_size + 2 * outer_padding
     height = char_size + 2 * outer_padding + triangle_size + inner_padding
@@ -132,13 +135,13 @@ class CharSelect:
         pad = self.inner_padding
 
         # left
-        pygame.draw.polygon(screen, (255, 255, 255),
+        pygame.draw.polygon(screen, SELECT_TRIANGLE_COLOR,
                             [(x + pad + triangle_size * 0.86, y),
                              (x + pad + triangle_size * 0.86, y + triangle_size),
                              (x + pad, y + triangle_size / 2)])
 
         # rigth
-        pygame.draw.polygon(screen, (255, 255, 255),
+        pygame.draw.polygon(screen, SELECT_TRIANGLE_COLOR,
                             [(x + char_size - pad - triangle_size * 0.86, y),
                              (x + char_size - pad - triangle_size * 0.86, y + triangle_size),
                              (x + char_size - pad, y + triangle_size / 2)])
@@ -153,18 +156,19 @@ class CharSelect:
     def draw_open_space(self, screen, x, y):
         self.draw_box(screen, x, y)
 
-        Text("Press", x=x + self.width / 2, y=y + self.height / 2 - 25, height=25,
-             color=(200, 200, 200), center=True).draw(screen)
-        Text("START", x=x + self.width / 2, y=y + self.height / 2, height=25,
-             color=(200, 200, 200), center=True).draw(screen)
-        Text("to join", x=x + self.width / 2, y=y + self.height / 2 + 25, height=25,
-             color=(200, 200, 200), center=True).draw(screen)
+        size = int(self.char_size / 4)
+        Text("Press", x=x + self.width / 2, y=y + self.height / 2 - size, size=size,
+             color=BUTTON_TEXT_COLOR, center=True).draw(screen)
+        Text("START", x=x + self.width / 2, y=y + self.height / 2, size=size,
+             color=BUTTON_TEXT_COLOR, center=True).draw(screen)
+        Text("to join", x=x + self.width / 2, y=y + self.height / 2 + size, size=size,
+             color=BUTTON_TEXT_COLOR, center=True).draw(screen)
         return
 
 
 class MultiCharSelect(MenuItem):
-    padding = 20  # TODO: settings
-    margin = 20
+    padding = SELECT_PADDING
+    margin = SELECT_MARGIN
 
     def __init__(self, players):
         self.selects = []

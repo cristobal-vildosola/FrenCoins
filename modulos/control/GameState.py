@@ -6,10 +6,11 @@ from modulos.control.Joystick import init_joystick, NullJoystick
 from modulos.control.Player import Player
 from modulos.elements.Group import CustomGroup
 from modulos.elements.Level import Level
-from modulos.elements.Sound import jump_sound, hit_sound
+from modulos.elements.Sound import jump_sound, hit_sound, play_background, stop_background
 from modulos.menu.Menu import Menu, CharSelectMenu
 from modulos.menu.MenuHandler import *
 from modulos.menu.MenuItem import Button, MenuText
+from settings.GUI import TITLE_COLOR, SUBTITLE_COLOR, MENU_BACKGROUND
 
 
 class GameState:
@@ -56,7 +57,7 @@ class MenuState(GameState):
         self.menu: Menu = menu
 
     def tick(self, events):
-        self.driver.screen.fill((226, 205, 86))
+        self.driver.screen.fill(MENU_BACKGROUND)
         self.menu.draw(self.driver.screen)
         return
 
@@ -84,8 +85,8 @@ class MenuState(GameState):
 class InStartScreen(MenuState):
     def __init__(self, driver):
         items = [
-            MenuText(text="FrenCoins", height=120, color=(14, 117, 14)),
-            MenuText(text="Press START / ENTER to begin", height=40),
+            MenuText(text="FrenCoins", size=120, color=TITLE_COLOR),
+            MenuText(text="Press START / ENTER", size=40),
         ]
         super().__init__(driver, Menu(driver, items))
 
@@ -112,7 +113,7 @@ class InStartScreen(MenuState):
 class InMainMenu(MenuState):
     def __init__(self, driver):
         items = [
-            MenuText(text="FrenCoins", height=100, color=(14, 117, 14)),
+            MenuText(text="FrenCoins", size=100, color=TITLE_COLOR),
             Button(handler=CharSelect(driver), text="Start Game"),
             Button(handler=MainMenuHandler(driver), text="Instructions"),
             Button(handler=QuitGame(driver), text="Exit", color=(170, 0, 0), hover_color=(220, 0, 0)),
@@ -144,7 +145,7 @@ class InGame(GameState):
     def __init__(self, driver, levels: List[Level]):
         super().__init__(driver)
 
-        # TODO: reproducir música
+        play_background()
         self.levels: List[Level] = levels
         self.level_num = 0
 
@@ -207,15 +208,11 @@ class InGame(GameState):
             if self.level_num >= len(self.levels):
                 if len(chars) > 0:
                     self.driver.game_won(level)
-                    return
-
                 else:
                     self.driver.game_over(level)
-                    return
 
         if len(chars) == 0:
             self.driver.game_over(level)
-            return
 
         return
 
@@ -223,7 +220,7 @@ class InGame(GameState):
 class Paused(MenuState):
     def __init__(self, driver, prev_state: InGame):
         items = [
-            MenuText("Pause", height=100, color=(217, 217, 217)),
+            MenuText("Pause", size=100, color=SUBTITLE_COLOR),
             Button(handler=ContinueGame(driver), text="Continue"),
             Button(handler=StartGame(driver), text="Restart"),
             Button(handler=MainMenuHandler(driver), text="Main menu"),
@@ -236,7 +233,7 @@ class Paused(MenuState):
         # oscurecer juego
         self.background = self.driver.screen.copy()
         self.background.fill((0, 0, 0))
-        self.background.set_alpha(150)  # TODO: setting darkness
+        self.background.set_alpha(150)
 
     def tick(self, events):
         self.prev_state.levels[self.prev_state.level_num].draw(self.driver.screen)
@@ -256,8 +253,8 @@ class Paused(MenuState):
 class GameOver(MenuState):
     def __init__(self, driver, level):
         items = [
-            MenuText(text="Game Over", height=100, color=(200, 10, 10)),
-            MenuText(text="Press START to go back to Main Menu", height=40, color=(200, 200, 200)),
+            MenuText(text="Game Over", size=100, color=(200, 10, 10)),
+            MenuText(text="Press START to go back to Main Menu", size=40, color=SUBTITLE_COLOR),
         ]
         super().__init__(driver, Menu(driver, items))
         self.level = level
@@ -269,14 +266,15 @@ class GameOver(MenuState):
 
     def press_start(self, player: Player):
         self.driver.main_menu()
+        stop_background()
         return
 
 
 class GameWon(MenuState):
     def __init__(self, driver, level: Level):
         items = [
-            MenuText(text="You Won!", height=100, color=(10, 200, 10)),
-            MenuText(text="Press START to go back to Main Menu", height=40, color=(200, 200, 200)),
+            MenuText(text="Congratules, you won!", size=100, color=TITLE_COLOR),
+            MenuText(text="Press START to go back to Main Menu", size=40, color=SUBTITLE_COLOR),
         ]
         super().__init__(driver, Menu(driver, items))
 
@@ -303,5 +301,6 @@ class GameWon(MenuState):
     def press_start(self, player: Player):
         jump_sound.set_volume(1)
         hit_sound.set_volume(1)
+        stop_background()
         self.driver.main_menu()
         return

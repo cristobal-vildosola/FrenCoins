@@ -1,22 +1,24 @@
+import math
+
 import pygame
 
 from modulos.elements.Block import Block
 from modulos.elements.Sound import play_fire
 from modulos.utils import path
-import math
+from settings.GUI import CANNON_SIZE
 
 
 class Cannon(Block):
 
-    def __init__(self, x, y, frecuencia=60, width=50, height=50,
-                 x_speed=0, y_speed=0, bullet_radius=5, bullet_damage=10, bullet_group=None):
-        # TODO: size settings
-        super().__init__(width, height, x, y)
+    def __init__(self, x, y, frecuencia=60, size=CANNON_SIZE,
+                 x_speed=0, y_speed=0, bullet_radius=5, bullet_damage=10):
+        # TODO: bullet default settings
+        super().__init__(size, size, x, y)
 
         # posición
         self.image = pygame.image.load(path('static/img/cannon.png'))
         # escalar a tamaño
-        self.image = pygame.transform.smoothscale(self.image, (width, height))
+        self.image = pygame.transform.smoothscale(self.image, (size, size))
         # voltear horizontalmente
         self.image = pygame.transform.flip(self.image, x_speed < 0, False)
 
@@ -31,7 +33,7 @@ class Cannon(Block):
         self.pos.center = self.rect.center
 
         # para lanzar proyectiles
-        self.bullet_group = bullet_group
+        self.bullet_group = None
         self.frecuencia = frecuencia
         self.iteracion = 0
 

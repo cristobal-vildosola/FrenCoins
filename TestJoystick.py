@@ -68,14 +68,14 @@ def test_joystick():
         hats = hats[:-5]
 
         screen.fill((200, 200, 200))
-        Text(titulo, 400, 100, center=True, height=20).draw(screen)
-        Text(intruccion, 400, 130, center=True, height=20).draw(screen)
+        Text(titulo, 400, 100, center=True, size=20).draw(screen)
+        Text(intruccion, 400, 130, center=True, size=20).draw(screen)
 
-        Text("Ejes", 400, 200, center=True, height=30).draw(screen)
-        Text(ejes, 400, 235, center=True, height=30).draw(screen)
-        Text(botones, 400, 318, center=True, height=20).draw(screen)
-        Text("Hats", 400, 400, center=True, height=30).draw(screen)
-        Text(hats, 400, 435, center=True, height=30).draw(screen)
+        Text("Ejes", 400, 200, center=True, size=30).draw(screen)
+        Text(ejes, 400, 235, center=True, size=30).draw(screen)
+        Text(botones, 400, 318, center=True, size=20).draw(screen)
+        Text("Hats", 400, 400, center=True, size=30).draw(screen)
+        Text(hats, 400, 435, center=True, size=30).draw(screen)
 
         pygame.display.flip()
         clock.tick(fps)

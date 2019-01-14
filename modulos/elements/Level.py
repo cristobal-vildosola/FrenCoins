@@ -5,6 +5,7 @@ from modulos.elements.Cannon import Cannon
 from modulos.elements.Coin import Coin
 from modulos.elements.Group import CustomGroup
 from modulos.elements.Text import Text
+from settings.GUI import SCREEN_WIDTH, SCREEN_HEIGHT, FPS, BACKGROUND_COLOR, TIMER_COLOR, TIMER_ENDING_COLOR
 
 
 class Level:
@@ -14,7 +15,6 @@ class Level:
 
         self.time = duration
         self.prep_time = 3
-        self.fps = 60  # TODO: setting
 
         self.coins = coins
 
@@ -30,10 +30,10 @@ class Level:
 
     def update(self):
         if self.prep_time > 0:
-            self.prep_time -= 1.0 / self.fps
+            self.prep_time -= 1.0 / FPS
             return
 
-        self.time -= 1.0 / self.fps
+        self.time -= 1.0 / FPS
 
         self.cannons.update()
         self.bullets.update()
@@ -57,15 +57,17 @@ class Level:
         return
 
     def draw(self, screen):
-        screen.fill((25, 115, 200))
+        screen.fill(BACKGROUND_COLOR)
 
         self.blocks.draw(screen)
         self.platforms.draw(screen)
 
-        number_color = (200, 200, 200)  # TODO: setting
+        number_color = TIMER_COLOR
         if self.time < 5:
-            number_color = (255, 0, 0)
-        Text(str(round(self.time, 1)), x=400, y=16, color=number_color, center=True, height=30).draw(screen)
+            number_color = TIMER_ENDING_COLOR
+
+        Text(str(round(self.time, 1)), x=SCREEN_WIDTH / 2, y=16, color=number_color, center=True, size=30) \
+            .draw(screen)
 
         self.cannons.draw(screen)
 
@@ -75,8 +77,8 @@ class Level:
                 objective.draw(screen)
         else:
             # mostrar tiempo de preparación
-            Text(str(int(self.prep_time) + 1), 400, 300, (200, 200, 200), center=True,
-                 height=int(80 + self.prep_time % 1 * 60)).draw(screen)
+            Text(str(int(self.prep_time) + 1), SCREEN_WIDTH / 2, SCREEN_HEIGHT / 2, TIMER_COLOR, center=True,
+                 size=int(80 + self.prep_time % 1 * 60)).draw(screen)
 
         self.bullets.draw(screen)
         return

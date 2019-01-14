@@ -7,6 +7,7 @@ from modulos.control.GameState import GameState, InMainMenu, InGame, InCharSelec
     GameOver
 from modulos.elements.Level import load_level
 from modulos.utils import path
+from settings.GUI import FPS
 
 
 class Driver:
@@ -18,7 +19,7 @@ class Driver:
 
         self.state: GameState = InStartScreen(self)
         self.clock: pygame.time.Clock = pygame.time.Clock()
-        self.fps: int = 60  # TODO: constant
+        self.fps: int = FPS
 
         self.running = True
 

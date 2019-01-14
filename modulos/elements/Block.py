@@ -1,10 +1,11 @@
 import pygame
 
+from settings.GUI import BLOCK_COLOR, PLATFORM_COLOR
+
 
 class Block(pygame.sprite.Sprite):
 
-    def __init__(self, width, height, x, y, color=(60, 30, 0)):
-        # TODO settings color
+    def __init__(self, width, height, x, y, color=BLOCK_COLOR):
         super().__init__()
 
         # imagen a mostrar cada vez que se llama draw()
@@ -53,8 +54,7 @@ class Block(pygame.sprite.Sprite):
 
 class Platform(Block):
 
-    def __init__(self, width, height, x, y, color=(100, 10, 100)):
-        # TODO settings color
+    def __init__(self, width, height, x, y, color=PLATFORM_COLOR):
         super().__init__(width, height, x, y, color)
 
     # choque con el lado izquierdo, no hace nada

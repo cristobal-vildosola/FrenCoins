@@ -2,11 +2,12 @@ from typing import List
 
 from modulos.menu.MenuHandler import *
 from modulos.menu.MenuItem import MenuItem, Button, MenuText, MultiCharSelect
+from settings.GUI import SCREEN_HEIGHT, SCREEN_WIDTH, TITLE_COLOR
 
 
 class Menu:
 
-    def __init__(self, driver, menu_items=(), x=400, screen_height=600):
+    def __init__(self, driver, menu_items=(), x=SCREEN_WIDTH / 2):
         self.driver = driver
         self.menu_items: List[MenuItem] = menu_items
         self.selected = 0
@@ -14,7 +15,6 @@ class Menu:
             self.ensure_selectable()
 
         self.x = x
-        self.screen_height = screen_height
 
     def add_item(self, item: MenuItem):
         self.menu_items.append(item)
@@ -26,7 +26,7 @@ class Menu:
             total_height += item.get_height() + item.get_margin()
         total_height -= self.menu_items[-1].get_margin()
 
-        y = self.screen_height / 2 - total_height / 2
+        y = SCREEN_HEIGHT / 2 - total_height / 2
 
         for i in range(len(self.menu_items)):
             item = self.menu_items[i]
@@ -69,34 +69,12 @@ class Menu:
         pass
 
 
-class PauseMenu(Menu):
-    def __init__(self, driver):
-        items = [
-            MenuText("Pause", height=100, color=(217, 217, 217)),
-            Button(handler=ContinueGame(driver), text="Continue"),
-            Button(handler=StartGame(driver), text="Restart"),
-            Button(handler=MainMenuHandler(driver), text="Main menu"),
-            Button(handler=QuitGame(driver), text="Exit", color=(170, 0, 0), hover_color=(220, 0, 0)),
-        ]
-        super().__init__(driver, items)
-
-
-class MainMenu(Menu):
-    def __init__(self, driver):
-        items = [
-            MenuText(text="FrenCoins", height=100, color=(14, 117, 14)),
-            Button(handler=CharSelect(driver), text="Start Game"),
-            Button(handler=MainMenuHandler(driver), text="Instructions"),
-            Button(handler=QuitGame(driver), text="Exit", color=(170, 0, 0), hover_color=(220, 0, 0)),
-        ]
-        super().__init__(driver, items)
-
-
 class CharSelectMenu(Menu):
     def __init__(self, driver):
+        # TODO rework interface
         self.char_select = MultiCharSelect(driver.players)
         items = [
-            MenuText(text="Choose your character", height=60, color=(14, 117, 14)),
+            MenuText(text="Choose your character", size=60, color=TITLE_COLOR),
             self.char_select,
             Button(handler=StartGame(driver), text="Start!"),
             Button(handler=MainMenuHandler(driver), text="Main menu"),

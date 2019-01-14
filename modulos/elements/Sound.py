@@ -49,3 +49,8 @@ def play_coin():
 def play_background():
     channels[10].play(background_sound, loops=-1)
     return
+
+
+def stop_background():
+    channels[10].stop()
+    return

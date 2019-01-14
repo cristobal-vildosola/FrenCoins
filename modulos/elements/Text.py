@@ -9,12 +9,12 @@ fonts = {}
 
 class Text:
 
-    def __init__(self, text, x=0, y=0, color=(0, 0, 0), height=30, center=False, antialias=True):
+    def __init__(self, text, x=0, y=0, color=(0, 0, 0), size=30, center=False, antialias=True):
         global fonts
-        if height not in fonts:
-            fonts[height] = pygame.font.Font(path("static/freesansbold.ttf"), height)
+        if size not in fonts:
+            fonts[size] = pygame.font.Font(path("static/freesansbold.ttf"), size)
 
-        self.text = fonts[height].render(text, antialias, color)
+        self.text = fonts[size].render(text, antialias, color)
 
         self.pos = self.text.get_rect()
         self.set_pos(x, y, center)

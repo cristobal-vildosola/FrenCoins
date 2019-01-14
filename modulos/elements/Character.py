@@ -5,27 +5,26 @@ import pygame
 from modulos.elements.Coin import Coin
 from modulos.elements.Sound import play_jump, play_hit, play_coin
 from modulos.elements.Cannon import Bullet
-
-char_size = 40  # TODO: setting
+from settings.GUI import CHAR_SIZE, CHAR_COIN_SIZE
 
 
 class Character(pygame.sprite.Sprite):
     LEFT = 0
     RIGHT = 1
 
-    def __init__(self, player_id, img, x=0, y=0, width=char_size, height=char_size, max_life=100, g=1, jumpspeed=18):
+    def __init__(self, player_id, img, x=0, y=0, max_life=100, g=1, jumpspeed=18):
         # TODO: settings max_life, g, jumpspeed
         super().__init__()
         self.id = player_id
 
         # imagen a mostrar cada vez que se llama draw()
         self.image = pygame.image.load(img)
-        self.image = pygame.transform.smoothscale(self.image, (width, height))
+        self.image = pygame.transform.smoothscale(self.image, (CHAR_SIZE, CHAR_SIZE))
         self.direction = self.LEFT
 
         # posición
-        self.width = width
-        self.height = height
+        self.width = CHAR_SIZE
+        self.height = CHAR_SIZE
         self.rect = self.image.get_rect().move(x, y)
         self.old_rect = self.rect.copy()
 
@@ -33,9 +32,9 @@ class Character(pygame.sprite.Sprite):
         self.max_life = max_life
         self.life = max_life
 
-        self.life_frame = pygame.Surface([width, 4])
+        self.life_frame = pygame.Surface([CHAR_SIZE, 4])
         self.life_frame.fill((255, 0, 0))
-        self.life_bar = pygame.Surface([width, 4])
+        self.life_bar = pygame.Surface([CHAR_SIZE, 4])
         self.life_bar.fill((0, 255, 0))
 
         # objetivos
@@ -118,7 +117,7 @@ class Character(pygame.sprite.Sprite):
     def draw_objectives(self, screen):
         if len(self.objectives) > 0:
             img = list(self.objectives)[0].image.copy()
-            img = pygame.transform.smoothscale(img, (10, 10))  # TODO: setting
+            img = pygame.transform.smoothscale(img, (CHAR_COIN_SIZE, CHAR_COIN_SIZE))
 
             for i in range(len(self.objectives)):
                 screen.blit(img, self.rect.move(2, 2 + 12 * i).topright)
@@ -237,8 +236,8 @@ class Character(pygame.sprite.Sprite):
 
 class Kirby(Character):
 
-    def __init__(self, player_id, width, height, x, y, img, g=0.5, jumpspeed=8, max_jumps=3):
-        super().__init__(player_id, width, height, x, y, img, g=g, jumpspeed=jumpspeed)
+    def __init__(self, player_id, x, y, img, g=0.5, jumpspeed=8, max_jumps=3):
+        super().__init__(player_id, x, y, img, g=g, jumpspeed=jumpspeed)
 
         self.max_jumps = max_jumps
         self.jumps = max_jumps
