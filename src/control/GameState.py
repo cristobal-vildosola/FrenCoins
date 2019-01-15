@@ -1,6 +1,7 @@
 from typing import List
 
 from settings.GUI import TITLE_COLOR, SUBTITLE_COLOR, MENU_BACKGROUND
+from settings.Game import MAX_NUM_PLAYERS
 from src.control.Keyboard import Player1Keyboard
 from src.control.Player import Player
 from src.elements.Group import CustomGroup
@@ -140,17 +141,18 @@ class InCharSelect(MenuState):
     def tick(self, events):
         super().tick(events)
 
-        # detectar conección de nuevos controles
-        for joystick in self.driver.available_joysticks():
-            if joystick.hold_start():
-                player = Player(len(self.driver.players), joystick=joystick)
-                self.add_player(player)
+        if len(self.driver.players) < MAX_NUM_PLAYERS:
+            # detectar conección de nuevos controles
+            for joystick in self.driver.available_joysticks():
+                if joystick.hold_start():
+                    player = Player(len(self.driver.players), joystick=joystick)
+                    self.add_player(player)
 
-        # detectar teclado
-        for keyboard in self.driver.available_keyboards():
-            if keyboard.press_primary(events):
-                player = Player(len(self.driver.players), keyboard=keyboard)
-                self.add_player(player)
+            # detectar teclado
+            for keyboard in self.driver.available_keyboards():
+                if keyboard.press_primary(events):
+                    player = Player(len(self.driver.players), keyboard=keyboard)
+                    self.add_player(player)
         return
 
     def add_player(self, player):

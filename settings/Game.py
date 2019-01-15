@@ -11,3 +11,7 @@ CHAR_GRAVITY = 60
 BULLET_DAMAGE = 10
 BULLET_RADIUS = 5
 BULLET_FRECUENCY = FPS
+
+SPRITE_LIST = ['Anouk', 'Ardila', 'Checho', 'Diggo', 'FatCow', 'Lecaros', 'LittleFrank',
+               'MrBear', 'Peibl', 'Pina', 'Shi', 'Tito', 'Tomimi']
+MAX_NUM_PLAYERS = 10

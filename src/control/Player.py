@@ -1,10 +1,8 @@
+from settings.Game import SPRITE_LIST
 from src.control.Joystick import NullJoystick, Joystick
 from src.control.Keyboard import NullKeyboard, Keyboard
 from src.elements.Character import Character
 from src.utils import path
-
-sprites = ['Anouk', 'Ardila', 'Checho', 'Diggo', 'FatCow', 'Lecaros', 'LittleFrank',
-           'MrBear', 'Peibl', 'Pina', 'Shi', 'Tito', 'Tomimi']
 
 
 class Player:
@@ -12,7 +10,7 @@ class Player:
         self.driver = None
         self.id = player_id
 
-        self.img = player_id % len(sprites)
+        self.img = player_id % len(SPRITE_LIST)
         self.char: Character = None
         self.restart_char()
 
@@ -55,15 +53,15 @@ class Player:
         return
 
     def img_path(self):
-        return path(f'static/img/{sprites[self.img]}.png')
+        return path(f'static/img/{SPRITE_LIST[self.img]}.png')
 
     def next_char(self):
-        self.img = (self.img + 1) % len(sprites)
+        self.img = (self.img + 1) % len(SPRITE_LIST)
         self.char.change_image(self.img_path())
         return
 
     def prev_char(self):
-        self.img = (self.img - 1) % len(sprites)
+        self.img = (self.img - 1) % len(SPRITE_LIST)
         self.char.change_image(self.img_path())
         return
 

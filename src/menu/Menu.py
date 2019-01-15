@@ -1,8 +1,8 @@
 from typing import List
 
 from settings.GUI import SCREEN_HEIGHT, SCREEN_WIDTH, TITLE_COLOR
-from src.menu.MenuHandler import *
-from src.menu.MenuItem import MenuItem, Button, MenuText, MultiCharSelect
+from settings.Game import MAX_NUM_PLAYERS
+from src.menu.MenuItem import MenuItem, MenuText, MultiCharSelect
 
 
 class Menu:
@@ -80,7 +80,6 @@ class Menu:
 class CharSelectMenu(Menu):
     def __init__(self, driver):
         self.char_select = MultiCharSelect(driver.players)
-        self.start_game = StartGame(driver)
         items = [
             MenuText(text="Choose your character", size=60, color=TITLE_COLOR),
             self.char_select,
@@ -89,11 +88,14 @@ class CharSelectMenu(Menu):
 
     def add_player(self, player):
         self.char_select.add_player(player)
+
+        if len(self.char_select.selects) > MAX_NUM_PLAYERS:
+            self.char_select.selects.pop(-1)
         return
 
     def start(self, player):
         if self.char_select.is_ready():
-            self.start_game.handle()
+            self.driver.start_game()
         return
 
     def unselect(self, player):
