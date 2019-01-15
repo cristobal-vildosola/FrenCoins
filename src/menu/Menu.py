@@ -95,3 +95,13 @@ class CharSelectMenu(Menu):
         if self.char_select.is_ready():
             self.start_game.handle()
         return
+
+    def unselect(self, player):
+        if player.id == 0 and not self.char_select.selects[player.id].locked:
+            self.driver.main_menu()
+        elif not self.char_select.selects[player.id].locked:
+            self.driver.remove_player(player)
+            self.char_select.remove_player(player)
+        else:
+            super().unselect(player)
+        return

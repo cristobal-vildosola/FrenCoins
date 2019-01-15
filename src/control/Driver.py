@@ -2,6 +2,8 @@ from typing import List
 
 import pygame
 
+from src.control.Joystick import init_joystick
+from src.control.Keyboard import Player1Keyboard, Player2Keyboard
 from src.control.Player import Player
 from src.control.GameState import GameState, InMainMenu, InGame, InCharSelect, InStartScreen, Paused, GameWon, \
     GameOver
@@ -14,7 +16,6 @@ from settings.Game import FPS
 class Driver:
     def __init__(self, screen: pygame.Surface):
         self.players: List[Player] = []
-        self.used_joysticks = set()
 
         self.screen: pygame.Surface = screen
 
@@ -45,10 +46,45 @@ class Driver:
         self.state = state
         return
 
-    def add_player(self, joystick):
-        self.players.append(Player(len(self.players), driver=self, joystick=joystick))
-        self.used_joysticks.add(joystick.get_id())
+    def add_player(self, player):
+        self.players.append(player)
+        player.set_driver(self)
         return
+
+    def remove_player(self, player):
+        self.players.remove(player)
+
+        for p in self.players:
+            if p.id > player.id:
+                p.id -= 1
+        return
+
+    def used_joysticks(self):
+        used = set()
+        for player in self.players:
+            used.add(player.joystick.get_id())
+        return used
+
+    def available_joysticks(self):
+        joysticks = []
+        for i in range(pygame.joystick.get_count()):
+            if i not in self.used_joysticks():
+                joysticks.append(init_joystick(i))
+        return joysticks
+
+    def available_keyboards(self):
+        player1 = True
+        player2 = True
+        for player in self.players:
+            player1 &= not player.keyboard.is_player_one()
+            player2 &= not player.keyboard.is_player_two()
+
+        keyboards = []
+        if player1:
+            keyboards.append(Player1Keyboard())
+        if player2:
+            keyboards.append(Player2Keyboard())
+        return keyboards
 
     # ----------- acciones -------------
 
@@ -97,6 +133,11 @@ class Driver:
         return
 
     # ----------- control del juego -------------
+
+    def reset_game(self):
+        self.players = []
+        self.set_state(InStartScreen(self))
+        return
 
     def main_menu(self):
         stop_background()

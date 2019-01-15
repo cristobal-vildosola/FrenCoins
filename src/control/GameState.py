@@ -1,9 +1,7 @@
 from typing import List
 
-import pygame
-
 from settings.GUI import TITLE_COLOR, SUBTITLE_COLOR, MENU_BACKGROUND
-from src.control.Joystick import init_joystick, NullJoystick
+from src.control.Keyboard import Player1Keyboard
 from src.control.Player import Player
 from src.elements.Group import CustomGroup
 from src.elements.Level import Level
@@ -105,19 +103,18 @@ class InStartScreen(MenuState):
         super().tick(events)
 
         # detectar control jugador 1
-        for i in range(pygame.joystick.get_count()):
-            joystick = init_joystick(i)
-
+        for joystick in self.driver.available_joysticks():
             if joystick.hold_start():
-                self.driver.add_player(joystick)
+                player = Player(len(self.driver.players), joystick=joystick)
+                self.driver.add_player(player)
                 self.driver.main_menu()
 
-        # detectar teclado
-        for event in events:
-            if event.type == pygame.KEYDOWN:
-                if event.key == pygame.K_RETURN:
-                    self.driver.add_player(NullJoystick())
-                    self.driver.main_menu()
+        # permitir solo teclado jugador 1
+        keyboard = Player1Keyboard()
+        if keyboard.press_primary(events):
+            player = Player(len(self.driver.players), keyboard=keyboard)
+            self.driver.add_player(player)
+            self.driver.main_menu()
         return
 
 
@@ -131,6 +128,10 @@ class InMainMenu(MenuState):
         ]
         super().__init__(driver, Menu(driver, items))
 
+    def press_secondary(self, player: Player):
+        self.driver.reset_game()
+        return
+
 
 class InCharSelect(MenuState):
     def __init__(self, driver):
@@ -140,15 +141,21 @@ class InCharSelect(MenuState):
         super().tick(events)
 
         # detectar conección de nuevos controles
-        for i in range(pygame.joystick.get_count()):
+        for joystick in self.driver.available_joysticks():
+            if joystick.hold_start():
+                player = Player(len(self.driver.players), joystick=joystick)
+                self.add_player(player)
 
-            # ignorar controles ya conectados
-            if i not in self.driver.used_joysticks:
-                joystick = init_joystick(i)
+        # detectar teclado
+        for keyboard in self.driver.available_keyboards():
+            if keyboard.press_primary(events):
+                player = Player(len(self.driver.players), keyboard=keyboard)
+                self.add_player(player)
+        return
 
-                if joystick.hold_start():
-                    self.driver.add_player(joystick)
-                    self.menu.add_player(self.driver.players[-1])
+    def add_player(self, player):
+        self.driver.add_player(player)
+        self.menu.add_player(self.driver.players[-1])
         return
 
 
@@ -288,7 +295,7 @@ class GameOver(MenuState):
 class GameWon(MenuState):
     def __init__(self, driver, level: Level):
         items = [
-            MenuText(text="Congratules, you won!", size=100, color=TITLE_COLOR),
+            MenuText(text="Congratules!", size=100, color=TITLE_COLOR),
             MenuText(text="Press START to go back to Main Menu", size=40, color=SUBTITLE_COLOR),
         ]
         super().__init__(driver, Menu(driver, items))

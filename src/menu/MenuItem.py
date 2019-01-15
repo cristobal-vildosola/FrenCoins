@@ -256,6 +256,13 @@ class MultiCharSelect(MenuItem):
         self.selects.insert(-1, CharSelect(player))
         return
 
+    def remove_player(self, player):
+        for select in self.selects:
+            if select.player == player:
+                self.selects.remove(select)
+                break
+        return
+
     def is_selectable(self):
         return True
 

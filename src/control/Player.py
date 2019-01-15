@@ -1,6 +1,5 @@
-from pygame.locals import *
-
 from src.control.Joystick import NullJoystick, Joystick
+from src.control.Keyboard import NullKeyboard, Keyboard
 from src.elements.Character import Character
 from src.utils import path
 
@@ -9,9 +8,8 @@ sprites = ['Anouk', 'Ardila', 'Checho', 'Diggo', 'FatCow', 'Lecaros', 'LittleFra
 
 
 class Player:
-    def __init__(self, player_id: int, driver=None, joystick: Joystick = NullJoystick(),
-                 k_up=K_UP, k_down=K_DOWN, k_left=K_LEFT, k_right=K_RIGHT):
-        self.driver = driver
+    def __init__(self, player_id: int, joystick: Joystick = NullJoystick(), keyboard: Keyboard = NullKeyboard):
+        self.driver = None
         self.id = player_id
 
         self.img = player_id % len(sprites)
@@ -19,71 +17,37 @@ class Player:
         self.restart_char()
 
         self.joystick: Joystick = joystick
-
-        # TODO settings keys by player id
-        self.k_up = k_up
-        self.k_down = k_down
-        self.k_left = k_left
-        self.k_right = k_right
+        self.keyboard = keyboard
 
     def set_driver(self, driver):
         self.driver = driver
 
     def actions(self, events, pressed):
-        # eventos (solo player 1)
-        if self.id == 0:
-            for event in events:
-                if event.type == KEYDOWN:
-                    if event.key == self.k_up:
-                        self.driver.press_up(self)
-                    elif event.key == self.k_down:
-                        self.driver.press_down(self)
-                    elif event.key == self.k_left:
-                        self.driver.press_left(self)
-                    elif event.key == self.k_right:
-                        self.driver.press_right(self)
-
-                    elif event.key == K_RETURN:
-                        self.driver.press_primary(self)
-                    elif event.key == K_BACKSPACE:
-                        self.driver.press_secondary(self)
-                    elif event.key == K_ESCAPE:
-                        self.driver.press_start(self)
-
-            # teclas apretadas
-            if pressed[self.k_up]:
-                self.driver.hold_up(self)
-            if pressed[self.k_down]:
-                self.driver.hold_down(self)
-            if pressed[self.k_left]:
-                self.driver.hold_left(self)
-            if pressed[self.k_right]:
-                self.driver.hold_right(self)
-
-        # joystick
-        if self.joystick.hold_up():
+        # controles presionados
+        if self.joystick.hold_up() or self.keyboard.hold_up(pressed):
             self.driver.hold_up(self)
-        if self.joystick.hold_down():
+        if self.joystick.hold_down() or self.keyboard.hold_down(pressed):
             self.driver.hold_down(self)
-        if self.joystick.hold_left():
+        if self.joystick.hold_left() or self.keyboard.hold_left(pressed):
             self.driver.hold_left(self)
-        if self.joystick.hold_right():
+        if self.joystick.hold_right() or self.keyboard.hold_right(pressed):
             self.driver.hold_right(self)
 
-        if self.joystick.press_up():
+        # controles pulsados
+        if self.joystick.press_up() or self.keyboard.press_up(events):
             self.driver.press_up(self)
-        if self.joystick.press_down():
+        if self.joystick.press_down() or self.keyboard.press_down(events):
             self.driver.press_down(self)
-        if self.joystick.press_left():
+        if self.joystick.press_left() or self.keyboard.press_left(events):
             self.driver.press_left(self)
-        if self.joystick.press_right():
+        if self.joystick.press_right() or self.keyboard.press_right(events):
             self.driver.press_right(self)
 
-        if self.joystick.press_primary():
+        if self.joystick.press_primary() or self.keyboard.press_primary(events):
             self.driver.press_primary(self)
-        if self.joystick.press_secondary():
+        if self.joystick.press_secondary() or self.keyboard.press_secondary(events):
             self.driver.press_secondary(self)
-        if self.joystick.press_start():
+        if self.joystick.press_start() or self.keyboard.press_start(events):
             self.driver.press_start(self)
 
         # actualizar valores anteriores del joystick
@@ -105,5 +69,5 @@ class Player:
 
     def restart_char(self):
         self.char = Character(self.id, self.img_path(),
-                              x=50 + 50 * self.id, y=200)
+                              x=100 + 50 * self.id, y=200)
         return
