@@ -47,7 +47,10 @@ class GameState:
     def press_start(self, player: Player):
         pass
 
-    def press_main(self, player: Player):
+    def press_primary(self, player: Player):
+        pass
+
+    def press_secondary(self, player: Player):
         pass
 
 
@@ -77,8 +80,16 @@ class MenuState(GameState):
         self.menu.action_right(player)
         return
 
-    def press_main(self, player: Player):
+    def press_primary(self, player: Player):
         self.menu.select(player)
+        return
+
+    def press_secondary(self, player: Player):
+        self.menu.unselect(player)
+        return
+
+    def press_start(self, player: Player):
+        self.menu.start(player)
         return
 
 
@@ -127,6 +138,12 @@ class InCharSelect(MenuState):
 
     def tick(self, events):
         super().tick(events)
+
+        for event in events:
+            if event.type == pygame.KEYDOWN and event.key == pygame.K_a:
+                self.driver.add_player(NullJoystick())
+                self.menu.add_player(self.driver.players[-1])
+                self.menu.char_select.selects[-2].locked = True
 
         # detectar conección de nuevos controles
         for i in range(pygame.joystick.get_count()):
@@ -193,7 +210,7 @@ class InGame(GameState):
         self.driver.pause(self)
         return
 
-    def press_main(self, player: Player):
+    def press_primary(self, player: Player):
         player.char.jump()
         return
 
@@ -239,6 +256,10 @@ class Paused(MenuState):
         self.prev_state.levels[self.prev_state.level_num].draw(self.driver.screen)
         self.driver.screen.blit(self.background, (0, 0))
         self.menu.draw(self.driver.screen)
+        return
+
+    def press_secondary(self, player: Player):
+        self.unpause()
         return
 
     def press_start(self, player: Player):

@@ -57,13 +57,21 @@ class Menu:
         return
 
     def action_right(self, player):
-        self.menu_items[self.selected].action_right()
+        self.menu_items[self.selected].action_right(player)
 
     def action_left(self, player):
-        self.menu_items[self.selected].action_left()
+        self.menu_items[self.selected].action_left(player)
 
     def select(self, player):
-        self.menu_items[self.selected].select()
+        self.menu_items[self.selected].select(player)
+        return
+
+    def unselect(self, player):
+        self.menu_items[self.selected].unselect(player)
+        return
+
+    def start(self, player):
+        pass
 
     def add_player(self, player):
         pass
@@ -71,24 +79,19 @@ class Menu:
 
 class CharSelectMenu(Menu):
     def __init__(self, driver):
-        # TODO rework interface
         self.char_select = MultiCharSelect(driver.players)
+        self.start_game = StartGame(driver)
         items = [
             MenuText(text="Choose your character", size=60, color=TITLE_COLOR),
             self.char_select,
-            Button(handler=StartGame(driver), text="Start!"),
-            Button(handler=MainMenuHandler(driver), text="Main menu"),
         ]
         super().__init__(driver, items)
 
-    def action_right(self, player):
-        player.next_char()
-        return
-
-    def action_left(self, player):
-        player.prev_char()
-        return
-
     def add_player(self, player):
         self.char_select.add_player(player)
+        return
+
+    def start(self, player):
+        if self.char_select.is_ready():
+            self.start_game.handle()
         return

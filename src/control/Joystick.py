@@ -2,15 +2,17 @@ import pygame
 
 
 class Joystick:
-    def __init__(self, joystick: pygame.joystick.Joystick, main_button=0, start_button=7,
+    def __init__(self, joystick: pygame.joystick.Joystick, primary_button=0, secondary_button=1, start_button=7,
                  x_axis=0, y_axis=1, x_orientation=1, y_orientation=1, x_treshold=0.5, y_treshold=0.7):
         self.joystick: pygame.joystick.Joystick = joystick
 
+        self.primary_button = primary_button
+        self.secondary_button = secondary_button
         self.start_button = start_button
-        self.main_button = main_button
 
+        self.primary_pressed = 0
+        self.secondary_pressed = 0
         self.start_pressed = 0
-        self.main_pressed = 0
         self.prev_x_value = 0
         self.prev_y_value = 0
 
@@ -22,7 +24,8 @@ class Joystick:
         self.y_orientation = y_orientation
 
     def update(self):
-        self.main_pressed = self.hold_main()
+        self.primary_pressed = self.hold_primary()
+        self.secondary_pressed = self.hold_secondary()
         self.start_pressed = self.hold_start()
         self.prev_x_value = self.joystick.get_axis(self.x_axis)
         self.prev_y_value = self.joystick.get_axis(self.y_axis)
@@ -52,14 +55,20 @@ class Joystick:
     def press_right(self):
         return self.x_orientation * self.prev_x_value <= self.x_treshold and self.hold_right()
 
-    def hold_main(self):
-        return self.joystick.get_button(self.main_button)
+    def hold_primary(self):
+        return self.joystick.get_button(self.primary_button)
+
+    def press_primary(self):
+        return not self.primary_pressed and self.hold_primary()
+
+    def hold_secondary(self):
+        return self.joystick.get_button(self.secondary_button)
+
+    def press_secondary(self):
+        return not self.secondary_pressed and self.hold_secondary()
 
     def hold_start(self):
         return self.joystick.get_button(self.start_button)
-
-    def press_main(self):
-        return not self.main_pressed and self.hold_main()
 
     def press_start(self):
         return not self.start_pressed and self.hold_start()
@@ -100,13 +109,19 @@ class NullJoystick(Joystick):
     def press_right(self):
         return False
 
-    def hold_main(self):
+    def hold_primary(self):
+        return False
+
+    def press_primary(self):
+        return False
+
+    def hold_secondary(self):
+        return False
+
+    def press_secondary(self):
         return False
 
     def hold_start(self):
-        return False
-
-    def press_main(self):
         return False
 
     def press_start(self):
@@ -118,13 +133,13 @@ class NullJoystick(Joystick):
 
 class XBoxJoystick(Joystick):
     def __init__(self, joystick):
-        Joystick.__init__(self, joystick, main_button=0, start_button=7,
+        Joystick.__init__(self, joystick, primary_button=0, start_button=7,
                           x_axis=0, y_axis=1, x_orientation=1, y_orientation=-1)
 
 
 class USBJoystick(Joystick):
     def __init__(self, joystick):
-        Joystick.__init__(self, joystick, main_button=2, start_button=9,
+        Joystick.__init__(self, joystick, primary_button=2, start_button=9,
                           x_axis=0, y_axis=1, x_orientation=1, y_orientation=-1)
 
 

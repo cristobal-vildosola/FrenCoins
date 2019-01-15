@@ -36,16 +36,18 @@ class Player:
                 if event.type == KEYDOWN:
                     if event.key == self.k_up:
                         self.driver.press_up(self)
-                    if event.key == self.k_down:
+                    elif event.key == self.k_down:
                         self.driver.press_down(self)
-                    if event.key == self.k_left:
+                    elif event.key == self.k_left:
                         self.driver.press_left(self)
-                    if event.key == self.k_right:
+                    elif event.key == self.k_right:
                         self.driver.press_right(self)
 
-                    if event.key == K_RETURN:
-                        self.driver.press_main(self)
-                    if event.key == K_ESCAPE:
+                    elif event.key == K_RETURN:
+                        self.driver.press_primary(self)
+                    elif event.key == K_BACKSPACE:
+                        self.driver.press_secondary(self)
+                    elif event.key == K_ESCAPE:
                         self.driver.press_start(self)
 
             # teclas apretadas
@@ -77,8 +79,10 @@ class Player:
         if self.joystick.press_right():
             self.driver.press_right(self)
 
-        if self.joystick.press_main():
-            self.driver.press_main(self)
+        if self.joystick.press_primary():
+            self.driver.press_primary(self)
+        if self.joystick.press_secondary():
+            self.driver.press_secondary(self)
         if self.joystick.press_start():
             self.driver.press_start(self)
 

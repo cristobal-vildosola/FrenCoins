@@ -6,6 +6,7 @@ from src.control.Player import Player
 from src.control.GameState import GameState, InMainMenu, InGame, InCharSelect, InStartScreen, Paused, GameWon, \
     GameOver
 from src.elements.Level import load_level
+from src.elements.Sound import stop_background
 from src.utils import path
 from settings.Game import FPS
 
@@ -83,8 +84,12 @@ class Driver:
         self.state.hold_right(player)
         return
 
-    def press_main(self, player: Player):
-        self.state.press_main(player)
+    def press_primary(self, player: Player):
+        self.state.press_primary(player)
+        return
+
+    def press_secondary(self, player: Player):
+        self.state.press_secondary(player)
         return
 
     def press_start(self, player: Player):
@@ -94,6 +99,7 @@ class Driver:
     # ----------- control del juego -------------
 
     def main_menu(self):
+        stop_background()
         self.set_state(InMainMenu(self))
         return
 

@@ -16,16 +16,16 @@ class Text:
 
         self.text = fonts[size].render(text, antialias, color)
 
-        self.pos = self.text.get_rect()
+        self.rect = self.text.get_rect()
         self.set_pos(x, y, center)
 
     def draw(self, screen):
-        screen.blit(self.text, self.pos)
+        screen.blit(self.text, self.rect)
         return
 
     def set_pos(self, x, y, center=False):
         if center:
-            self.pos.center = (x, y)
+            self.rect.center = (x, y)
         else:
-            self.pos.topleft = (x, y)
+            self.rect.topleft = (x, y)
         return
