@@ -1,11 +1,12 @@
 import json
 
+from settings.GUI import SCREEN_WIDTH, SCREEN_HEIGHT, BACKGROUND_COLOR, TIMER_COLOR, TIMER_ENDING_COLOR
+from settings.Game import FPS
 from src.elements.Block import Block, Platform
 from src.elements.Cannon import Cannon
 from src.elements.Coin import Coin
 from src.elements.Group import CustomGroup
 from src.elements.Text import Text
-from settings.GUI import SCREEN_WIDTH, SCREEN_HEIGHT, FPS, BACKGROUND_COLOR, TIMER_COLOR, TIMER_ENDING_COLOR
 
 
 class Level:

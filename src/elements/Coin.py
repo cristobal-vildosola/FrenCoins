@@ -1,7 +1,7 @@
 import pygame
 
-from src.utils import path
 from settings.GUI import COIN_SIZE
+from src.utils import path
 
 
 class Coin(pygame.sprite.Sprite):

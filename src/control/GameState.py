@@ -2,6 +2,7 @@ from typing import List
 
 import pygame
 
+from settings.GUI import TITLE_COLOR, SUBTITLE_COLOR, MENU_BACKGROUND
 from src.control.Joystick import init_joystick, NullJoystick
 from src.control.Player import Player
 from src.elements.Group import CustomGroup
@@ -10,7 +11,6 @@ from src.elements.Sound import jump_sound, hit_sound, play_background, stop_back
 from src.menu.Menu import Menu, CharSelectMenu
 from src.menu.MenuHandler import *
 from src.menu.MenuItem import Button, MenuText
-from settings.GUI import TITLE_COLOR, SUBTITLE_COLOR, MENU_BACKGROUND
 
 
 class GameState:

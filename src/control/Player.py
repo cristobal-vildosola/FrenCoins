@@ -1,8 +1,8 @@
 from pygame.locals import *
 
 from src.control.Joystick import NullJoystick, Joystick
-from src.utils import path
 from src.elements.Character import Character
+from src.utils import path
 
 sprites = ['Anouk', 'Ardila', 'Checho', 'Diggo', 'FatCow', 'Lecaros', 'LittleFrank',
            'MrBear', 'Peibl', 'Pina', 'Shi', 'Tito', 'Tomimi']

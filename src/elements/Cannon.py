@@ -2,17 +2,17 @@ import math
 
 import pygame
 
+from settings.GUI import CANNON_SIZE
+from settings.Game import BULLET_DAMAGE, BULLET_FRECUENCY, BULLET_RADIUS
 from src.elements.Block import Block
 from src.elements.Sound import play_fire
 from src.utils import path
-from settings.GUI import CANNON_SIZE
 
 
 class Cannon(Block):
 
-    def __init__(self, x, y, frecuencia=60, size=CANNON_SIZE,
-                 x_speed=0, y_speed=0, bullet_radius=5, bullet_damage=10):
-        # TODO: bullet default settings
+    def __init__(self, x, y, x_speed=0, y_speed=0, frecuencia=BULLET_FRECUENCY,
+                 size=CANNON_SIZE, bullet_radius=BULLET_RADIUS, bullet_damage=BULLET_DAMAGE):
         super().__init__(size, size, x, y)
 
         # posición
@@ -26,6 +26,7 @@ class Cannon(Block):
         self.rect = self.image.get_rect().move(x, y)
 
         # rotar según angulo de disparo
+        # TODO balas verticales
         self.image = pygame.transform.rotate(self.image, -math.degrees(math.atan(y_speed / x_speed)))
 
         # obtener rect y corregir posición de dibujo

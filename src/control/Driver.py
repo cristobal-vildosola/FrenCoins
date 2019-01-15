@@ -7,7 +7,7 @@ from src.control.GameState import GameState, InMainMenu, InGame, InCharSelect, I
     GameOver
 from src.elements.Level import load_level
 from src.utils import path
-from settings.GUI import FPS
+from settings.Game import FPS
 
 
 class Driver:

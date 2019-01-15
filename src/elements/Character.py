@@ -2,18 +2,18 @@ from typing import Union
 
 import pygame
 
+from settings.GUI import CHAR_SIZE, CHAR_COIN_SIZE
+from settings.Game import CHAR_LIFE, CHAR_GRAVITY, CHAR_SPEED, CHAR_JUMPSPEED, CHAR_JUMPTRIES, FPS
+from src.elements.Cannon import Bullet
 from src.elements.Coin import Coin
 from src.elements.Sound import play_jump, play_hit, play_coin
-from src.elements.Cannon import Bullet
-from settings.GUI import CHAR_SIZE, CHAR_COIN_SIZE
 
 
 class Character(pygame.sprite.Sprite):
     LEFT = 0
     RIGHT = 1
 
-    def __init__(self, player_id, img, x=0, y=0, max_life=100, g=1, jumpspeed=18):
-        # TODO: settings max_life, g, jumpspeed
+    def __init__(self, player_id, img, x=0, y=0, g=CHAR_GRAVITY, jumpspeed=CHAR_JUMPSPEED):
         super().__init__()
         self.id = player_id
 
@@ -29,8 +29,8 @@ class Character(pygame.sprite.Sprite):
         self.old_rect = self.rect.copy()
 
         # vida
-        self.max_life = max_life
-        self.life = max_life
+        self.max_life = CHAR_LIFE
+        self.life = CHAR_LIFE
 
         self.life_frame = pygame.Surface([CHAR_SIZE, 4])
         self.life_frame.fill((255, 0, 0))
@@ -46,7 +46,7 @@ class Character(pygame.sprite.Sprite):
         self.vy = 0
 
         self.jumptries = 0
-        self.maxjumptries = 4  # TODO: setting
+        self.maxjumptries = CHAR_JUMPTRIES
         self.standing = False
         self.falling = False
 
@@ -57,12 +57,12 @@ class Character(pygame.sprite.Sprite):
         return
 
     def move_right(self):
-        self.move(dx=5)  # TODO: setting
+        self.move(dx=CHAR_SPEED / FPS)
         self.direction = self.RIGHT
         return
 
     def move_left(self):
-        self.move(dx=-5)  # TODO: setting
+        self.move(dx=-CHAR_SPEED / FPS)
         self.direction = self.LEFT
         return
 
@@ -82,7 +82,7 @@ class Character(pygame.sprite.Sprite):
             play_jump(self.id)
 
         self.jumptries = max(self.jumptries - 1, 0)
-        self.vy += self.g
+        self.vy += self.g / FPS
         self.rect.y += self.vy
         self.standing = False
         return

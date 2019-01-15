@@ -1,8 +1,8 @@
 from typing import List
 
+from settings.GUI import SCREEN_HEIGHT, SCREEN_WIDTH, TITLE_COLOR
 from src.menu.MenuHandler import *
 from src.menu.MenuItem import MenuItem, Button, MenuText, MultiCharSelect
-from settings.GUI import SCREEN_HEIGHT, SCREEN_WIDTH, TITLE_COLOR
 
 
 class Menu:
