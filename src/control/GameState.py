@@ -139,12 +139,6 @@ class InCharSelect(MenuState):
     def tick(self, events):
         super().tick(events)
 
-        for event in events:
-            if event.type == pygame.KEYDOWN and event.key == pygame.K_a:
-                self.driver.add_player(NullJoystick())
-                self.menu.add_player(self.driver.players[-1])
-                self.menu.char_select.selects[-2].locked = True
-
         # detectar conección de nuevos controles
         for i in range(pygame.joystick.get_count()):
 

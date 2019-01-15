@@ -300,7 +300,7 @@ class MultiCharSelect(MenuItem):
         return int((len(self.selects) - 1) / self.max_select_per_row) + 1
 
     def get_height(self):
-        return CharSelect.height * self.get_num_rows() + self.padding * (self.get_num_rows() - 1)
+        return self.get_num_rows() * (CharSelect.height + self.padding) + self.start_message.rect.height
 
     def get_margin(self):
         return self.margin
