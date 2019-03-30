@@ -148,8 +148,11 @@ class Driver:
         self.set_state(InCharSelect(self))
 
     def start_game(self):
+        from src.elements.Level import load_level2
+        from static.maps.level1 import level1
+
         levels = [
-            load_level(path('static/maps/level1.json')),
+            load_level2(level1),
             load_level(path('static/maps/level2.json')),
             load_level(path('static/maps/level3.json')),
             load_level(path('static/maps/level4.json')),
@@ -173,7 +176,5 @@ class Driver:
         self.set_state(GameOver(self, level))
 
     def quit_game(self):
-        pygame.quit()
         self.running = False
-        exit(0)
         return

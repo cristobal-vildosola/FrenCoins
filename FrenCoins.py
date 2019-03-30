@@ -1,6 +1,8 @@
 from src.control.Driver import Driver
 from src.utils import init_screen
 
+import pygame
+
 
 def main():
     screen = init_screen()
@@ -8,6 +10,7 @@ def main():
 
     while driver.running:
         driver.tick()
+    pygame.quit()
     return
 
 

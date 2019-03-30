@@ -3,7 +3,7 @@ from typing import Union
 import pygame
 
 from settings.GUI import CHAR_SIZE, CHAR_COIN_SIZE
-from settings.Game import CHAR_LIFE, CHAR_GRAVITY, CHAR_SPEED, CHAR_JUMPSPEED, CHAR_JUMPTRIES, FPS
+from settings.Game import CHAR_LIFE, CHAR_GRAVITY, CHAR_SPEED, CHAR_JUMPSPEED, CHAR_JUMPTRIES
 from src.elements.Cannon import Bullet
 from src.elements.Coin import Coin
 from src.elements.Sound import play_jump, play_hit, play_coin
@@ -57,12 +57,12 @@ class Character(pygame.sprite.Sprite):
         return
 
     def move_right(self):
-        self.move(dx=CHAR_SPEED / FPS)
+        self.move(dx=CHAR_SPEED)
         self.direction = self.RIGHT
         return
 
     def move_left(self):
-        self.move(dx=-CHAR_SPEED / FPS)
+        self.move(dx=-CHAR_SPEED)
         self.direction = self.LEFT
         return
 
@@ -82,7 +82,7 @@ class Character(pygame.sprite.Sprite):
             play_jump(self.id)
 
         self.jumptries = max(self.jumptries - 1, 0)
-        self.vy += self.g / FPS
+        self.vy += self.g
         self.rect.y += self.vy
         self.standing = False
         return

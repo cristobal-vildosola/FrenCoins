@@ -130,3 +130,23 @@ def load_level(level_json):
         coins.add(Coin(**coin))
 
     return Level(duration=level["duration"], coins=coins, cannons=cannons, blocks=blocks, platforms=platforms)
+
+
+def load_level2(level):
+    blocks = CustomGroup()
+    for block in level["blocks"]:
+        blocks.add(Block(**block))
+
+    platforms = CustomGroup()
+    for platform in level["platforms"]:
+        platforms.add(Platform(**platform))
+
+    cannons = CustomGroup()
+    for cannon in level["cannons"]:
+        cannons.add(Cannon(**cannon))
+
+    coins = CustomGroup()
+    for coin in level["coins"]:
+        coins.add(Coin(**coin))
+
+    return Level(duration=level["duration"], coins=coins, cannons=cannons, blocks=blocks, platforms=platforms)

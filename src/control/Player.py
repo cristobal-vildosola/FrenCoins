@@ -6,7 +6,7 @@ from src.utils import path
 
 
 class Player:
-    def __init__(self, player_id: int, joystick: Joystick = NullJoystick(), keyboard: Keyboard = NullKeyboard):
+    def __init__(self, player_id: int, joystick: Joystick = NullJoystick(), keyboard: Keyboard = NullKeyboard()):
         self.driver = None
         self.id = player_id
 
